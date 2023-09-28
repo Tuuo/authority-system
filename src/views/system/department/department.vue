@@ -143,20 +143,39 @@ export default {
         */
         onConfirm() {
             //表单验证
-            this.$refs.deptForm.validate((valid) => {
+            this.$refs.deptForm.validate(async (valid) => {
                 //如果验证通过
                 if (valid) {
-                    //关闭窗口
-                    this.deptDialog.visible = false;
+                    let res = null;//后端返回的数据
+                    //判断部门ID是否有数据，如果部门ID为空，则表示新增，否则就是修改
+                    if (this.dept.id === '') {//新增
+                        //发送新增请求
+                        res = await departmentApi.addDept(this.dept);
+                    } else {
+                        //发送修改请求
+                    }
+                    //判断是否成功
+                    if (res.success) {
+                        this.$message.success(res.message);
+                        //刷新
+                        this.search();
+                        //关闭窗口
+                        this.deptDialog.visible = false;
+                    } else {
+                        this.$message.error(res.message);
+                    }
                 }
             });
         },
-      
+
+
 
         /**
         * 打开添加部门窗口
         */
         openAddWindow() {
+            //清空表单数据
+            this.$resetForm("deptForm", this.dept);
             //设置窗口标题
             this.deptDialog.title = "新增部门";
             // console.log(this.deptDialog.visible);
@@ -184,7 +203,7 @@ export default {
             this.searchModel = {};//清空数据
             this.search();//重新调用方法
         },
-    
+
         /**
 * 选择所属部门
 */

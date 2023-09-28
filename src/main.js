@@ -34,6 +34,10 @@ import * as filters from './filters' // global filters
 // }
 //导入封装信息确认提示框组件脚本
 import myconfirm from '@/utils/myconfirm'
+//导入清空表单工具
+import resetForm from '@/utils/resetForm'
+Vue.prototype.$resetForm = resetForm;
+
 Vue.prototype.$myconfirm = myconfirm;
 
 Vue.use(Element, {
