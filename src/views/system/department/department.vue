@@ -31,8 +31,8 @@
         <system-dialog :title="deptDialog.title" :visible="deptDialog.visible" :width="deptDialog.width"
             :height="deptDialog.height" @onClose="onClose" @onConfirm="onConfirm">
             <div slot="content">
-                <el-form :model="dept" ref="deptForm" :rules="rules" label-width="80px" :inline="true" size="small">
-                    <el-form-item label="所属部门" prop="parentName">
+                <el-form :model="dept" ref="deptForm" :rules="rules" label-width="80px" :inline="true" size="small" align="center">
+                    <el-form-item label="所属部门" prop="parentName" >
                         <el-input v-model="dept.parentName" @click.native="selectDepartment()" :readonly="true"></el-input>
                     </el-form-item>
                     <el-form-item label="部门名称" prop="departmentName">
@@ -92,8 +92,8 @@ export default {
             deptDialog: {
                 title: "新增部门",
                 visible: false, //是否显示
-                width: 560,
-                height: 170,
+                width: 400,
+                height: 300,
             },
             //部门对象
             dept: {
@@ -153,6 +153,9 @@ export default {
                         res = await departmentApi.addDept(this.dept);
                     } else {
                         //发送修改请求
+                        res = await departmentApi.updateDept(this.dept);
+
+                        
                     }
                     //判断是否成功
                     if (res.success) {
@@ -247,6 +250,48 @@ export default {
             //修改折叠展开状态
             data.open = !data.open;
             this.$refs.parentTree.store.nodesMap[data.id].expanded = !data.open;
+        },
+        /**
+         * 编辑部门
+         */
+        handleEdit(row){
+            //数据回显
+            this.$objCopy(row,this.dept)
+            console.log(row);
+            //设置窗口标题
+            this.deptDialog.title = "编辑部门"
+            //显示窗口
+            this.deptDialog.visible = true
+        },
+        /**
+         * 删除部门
+         * 
+         */
+        async handleDelete(row){
+            //查询部门下是否存在子部门或用户
+            let result = await departmentApi.checkDepartment({id :row.id })
+            //判断是否可以删除
+            if(!result.success){
+                //提示不能删除
+                this.$message.warning(result.message)
+            }else{
+                //确定是否删除
+                let confirm = await this.$myconfirm("确定要删除该数据吗？")
+                if(confirm){
+                    //发送删除请求
+                    let res = await departmentApi.deleteById({id: row.id })
+                    //判断是否成功
+                    if(res.success){
+                        //成功提示
+                        this.$message.success(res.message)
+                        //刷新
+                        this.search()
+                    }else{
+                        this.$message.error(res.message)
+                    }
+                }
+            }
+
         },
 
     },
