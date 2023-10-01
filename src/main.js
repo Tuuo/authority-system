@@ -39,6 +39,7 @@ import resetForm from '@/utils/resetForm'
 
 //导入快速复制对象工具
 import objCopy from '@/utils/objCopy'
+
 Vue.prototype.$objCopy = objCopy;
 Vue.prototype.$resetForm = resetForm;
 
