@@ -73,6 +73,7 @@ import SystemDialog from '@/components/system/SystemDialog.vue';
 //导入自定义的icon图标库
 import { elementIcons } from "@/utils/icons";
 export default {
+    name: "menuList",
     components: {
         SystemDialog
     },
