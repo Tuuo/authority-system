@@ -203,7 +203,7 @@ export default {
         * 重置
         */
         resetValue() {
-            this.searchModel = {};//清空数据
+            this.searchModel.departmentName = '';//清空数据
             this.search();//重新调用方法
         },
 

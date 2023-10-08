@@ -1,5 +1,40 @@
 <template>
     <el-main>
+        <!-- 新增按钮 -->
+        <el-button type="success" icon="el-icon-plus" @click="openAddWindow">新增</el-button>
+        <!-- 数据表格 -->
+        <el-table style="margin-top: 10px" :height="tableHeight" :data="menuList" row-key="id" default-expand-all
+            :tree-props="{ children: 'children' }" :border="true" stripe>
+            <el-table-column prop="label" label="菜单名称"></el-table-column>
+            <el-table-column prop="type" label="菜单类型" align="center">
+                <template slot-scope="scope">
+                    <el-tag v-if="scope.row.type == '0'" size="normal">目录</el-tag>
+                    <el-tag type="success" v-else-if="scope.row.type == '1'" size="normal">
+                        菜单</el-tag>
+                    <el-tag type="warning" v-else-if="scope.row.type == '2'" size="normal">
+                        按钮</el-tag>
+                </template>
+            </el-table-column>
+            <el-table-column prop="icon" label="图标" align="center">
+                <template slot-scope="scope">
+                    <i :class="scope.row.icon" v-if="scope.row.icon.includes('el-icon')">
+                    </i>
+                    <svg-icon v-else :icon-class="scope.row.icon"></svg-icon>
+                </template>
+            </el-table-column>
+            <el-table-column prop="name" label="路由名称"></el-table-column>
+            <el-table-column prop="path" label="路由地址"></el-table-column>
+            <el-table-column prop="url" label="组件路径"></el-table-column>
+            <el-table-column align="center">
+                <template slot-scope="scope">
+                    <el-button type="primary" icon="el-icon-edit" size="small" @click="editMenu(scope.row)">编辑
+                    </el-button>
+                    <el-button type="danger" size="small" icon="el-icon-delete" @click="deleteMenu(scope.row)">删除
+                    </el-button>
+                </template>
+            </el-table-column>
+        </el-table>
+
         <!-- 新增或编辑弹框 -->
         <system-dialog :title="menuDialog.title" :width="menuDialog.width" :height="menuDialog.height"
             :visible="menuDialog.visible" @onClose="onClose" @onConfirm="onConfirm">
@@ -23,7 +58,21 @@
                         <el-input v-model="menu.label"></el-input>
                     </el-form-item>
                     <el-form-item size="small" label="菜单图标">
-                        <el-input v-model="menu.icon"></el-input>
+                        <my-icon @selecticon="setIcon" ref="child"></my-icon>
+                        <!-- <div class="chooseIcons">
+                            <el-popover placement="bottom" width="450" trigger="click">
+                                <span slot="reference"
+                                    style="display: inline-block;width: 200px;height: 33px;line-height: 33px;">
+                                    <i :class="userChooseIcon"></i>
+                                    {{ userChooseIcon }}
+                                </span>
+                                <div class="iconList">
+                                    <i v-for="item in iconList" :key="item" :class="item" @click="setIcon(item)"
+                                        style="font-size: 20px"></i>
+                                </div>
+                            </el-popover>
+                        </div> -->
+
                     </el-form-item>
                     <el-form-item prop="name" v-if="menu.type == 1" size="small" label="路由名称">
                         <el-input v-model="menu.name"></el-input>
@@ -70,18 +119,22 @@
 <script>
 //导入对话框组件
 import SystemDialog from '@/components/system/SystemDialog.vue';
-//导入自定义的icon图标库
-import { elementIcons } from "@/utils/icons";
+
+import MyIcon from '@/components/system/MyIcon.vue';
+//导入menu.js脚本代码
+import menuApi from '@/api/menu';
+
 export default {
     name: "menuList",
     components: {
-        SystemDialog
+        SystemDialog,
+        MyIcon
     },
 
     data() {
         return {
-            iconList: [],//图标列表
-            userChooseIcon: "",//用户选中的图标
+            menuList: [], //菜单列表
+            tableHeight: 0,//表格高度
             //新增或编辑弹框属性
             menuDialog: {
                 title: "",
@@ -132,6 +185,19 @@ export default {
     },
     methods: {
         /**
+         * 查询菜单列表
+        */
+        async search() {
+            //发送查询请求
+            let res = await menuApi.getMenuList();
+            //判断是否成功
+            if (res.success) {
+                //赋值
+                this.menuList = res.data;
+            }
+        },
+
+        /**
         * 打开添加窗口
         */
         openAddWindow() {
@@ -150,8 +216,33 @@ export default {
         */
         onConfirm() {
             //表单验证
-            this.$refs.menuForm.validate((valid) => {
+            this.$refs.menuForm.validate(async (valid) => {
                 if (valid) {
+                    let res = null;
+                    //判断当前是新增操作还是修改操作
+                    if (this.menu.id === "") {
+                        //发送添加请求
+                        res = await menuApi.addMenu(this.menu);
+
+                    } else {
+                        //发送修改请求
+                        res = await menuApi.updateMenu(this.menu)
+                    }
+                    //判断是否成功
+                    if (res.success) {
+                        //提示成功
+                        this.$message.success(res.message);
+                        //刷新数据表格
+                        // this.search();
+                        window.location.reload()
+                        //关闭窗口
+                        this.menuDialog.visible = false;
+
+                    } else {
+                        //提示失败
+                        this.$message.error(res.message);
+                    }
+
                 }
             });
         },
@@ -161,8 +252,8 @@ export default {
         selectParentMenu() {
         },
         /**
-* 选择所属菜单
-*/
+         * 选择所属菜单
+        */
         async selectParentMenu() {
             //显示窗口
             this.parentDialog.visible = true;
@@ -204,25 +295,66 @@ export default {
             this.menu.parentName = data.label;
         },
         /**
-* 打开添加窗口
-*/
+        * 打开添加窗口
+        */
         openAddWindow() {
             this.$resetForm('menuForm', this.menu) //清空表单数据
+            //清空图标选择器
+            this.$nextTick(() => {
+                this.$refs.child.userChooseIcon = "";
+            })
             this.menuDialog.title = '新增菜单' //设置窗口标题
             this.menuDialog.visible = true //显示窗口
-            this.userChooseIcon = "";//清空菜单图标
         },
-        /**
-        * 获取图标列表
-        */
-        getIconList() {
-            this.iconList = elementIcons;
-        },
+      
         //给icon绑定的点击事件
         setIcon(icon) {
-            this.userChooseIcon = icon; //将i的样式设为选中的样式el-icon-xxx
             this.menu.icon = icon;
         },
+        /**
+         * 编辑菜单
+         */
+        editMenu(row) {
+            //把当前要编辑的数据复制到数据域，给表单回显
+            this.$objCopy(row, this.menu)
+            //设置弹框属性
+            this.menuDialog.title = "编辑菜单"
+            this.menuDialog.visible = true
+            this.$nextTick(() => {
+                //菜单图标回显
+                this.$refs["child"].userChooseIcon = row.icon
+            })
+        },
+        /**
+         * 删除菜单
+         */
+        async deleteMenu(row){
+            //判断是否存在子菜单
+            let result = await menuApi.checkPermission({id :  row.id})
+            //判断是否可以删除
+            if(!result.success){
+                //提示不能删除
+                this.$message.warning(result.message)
+            }else{
+                //确认是否删除
+                let confirm = await this.$myconfirm("确认要删除该数据吗？")
+                if(confirm){
+                    //发送删除请求
+                    let res = await menuApi.deleteById({id : row.id})
+                    //判断是否成功
+                    if(res.success){
+                        //成功提示
+                        this.$message.success(res.message)
+                        //刷新
+                        this.search()
+                    
+                    }else{
+                        //失败提示
+                        this.$message.error(res.message)
+                    }
+                }
+            }
+        }
 
 
     },
@@ -230,14 +362,38 @@ export default {
     created() {
         //调用查询菜单列表的方法
         this.search()
-        //调用获取图标列表
-        this.getIconList();
-    },
 
-};
+    },
+    mounted() {
+        this.$nextTick(() => {
+            this.tableHeight = window.innerHeight - 180
+
+        })
+    }
+}
 
 </script>
 <style lang="scss" scoped>
+::-webkit-scrollbar {
+    width: 5px;
+    height: 5px;
+    background-color: #F5F5F5;
+}
+
+::-webkit-scrollbar-track {
+    box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.3);
+    -webkit-box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.3);
+    border-radius: 8px;
+    background-color: #F5F5F5;
+}
+
+::-webkit-scrollbar-thumb {
+    border-radius: 8px;
+    box-shadow: inset 0 0 6px rgba(0, 0, 0, .1);
+    -webkit-box-shadow: inset 0 0 6px rgba(0, 0, 0, .1);
+    background-color: #c8c8c8;
+}
+
 .iconList {
     width: 400px;
     height: 300px;

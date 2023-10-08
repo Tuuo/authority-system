@@ -1,74 +1,115 @@
 <template>
-  <div class="dashboard-editor-container">
-    <div class=" clearfix">
-      <pan-thumb :image="avatar" style="float: left">
-        Your roles:
-        <span v-for="item in roles" :key="item" class="pan-info-roles">{{ item }}</span>
-      </pan-thumb>
-      <github-corner style="position: absolute; top: 0px; border: 0; right: 0;" />
-      <div class="info-container">
-        <span class="display_name">{{ name }}</span>
-        <span style="font-size:20px;padding-top:20px;display:inline-block;">Editor's Dashboard</span>
-      </div>
-    </div>
-    <div>
-      <img :src="emptyGif" class="emptyGif">
-    </div>
+  <div>
+    <h2>我的任务</h2>
+    <el-card>
+      <el-row>
+        <el-col v-for="task in tasks" :key="task.id" :span="4">
+          <el-card class="card">
+            <p>{{ task.name }}</p>
+          </el-card>
+        </el-col>
+        <el-button class="plus" icon="el-icon-circle-plus-outline" circle></el-button>
+      </el-row>
+    </el-card>
+
+    <h2>任务通告</h2>
+    <el-card>
+      <el-row>
+        <el-col v-for="notice in notices" :key="notice.id" :span="4">
+          <el-card>
+            <p>{{ notice.title }}</p>
+          </el-card>
+        </el-col>
+      </el-row>
+    </el-card>
+
+    <h2>我的审批</h2>
+    <el-card>
+      <el-row>
+        <el-col v-for="approval in approvals" :key="approval.id" :span="8">
+          <el-card>
+            <p>{{ approval.title }}</p>
+          </el-card>
+        </el-col>
+      </el-row>
+    </el-card>
+
+    <h2>我的汇总</h2>
+    <el-card>
+      <el-row>
+        <el-col :span="8">
+          <el-card>
+            <p>出勤汇总</p>
+          </el-card>
+        </el-col>
+        <el-col :span="8">
+          <el-card>
+            <p>维修</p>
+          </el-card>
+        </el-col>
+        <el-col :span="8">
+          <el-card>
+            <p>用餐金额统计</p>
+          </el-card>
+        </el-col>
+      </el-row>
+    </el-card>
   </div>
 </template>
 
 <script>
-import { mapGetters } from 'vuex'
-import PanThumb from '@/components/PanThumb'
-import GithubCorner from '@/components/GithubCorner'
+//导入对话框组件
+import SystemDialog from '@/components/system/SystemDialog.vue';
+import taskApi from "@/api/task";
 
 export default {
-  name: 'DashboardEditor',
-  components: { PanThumb, GithubCorner },
+  name: 'myTask',
+  components: {
+    SystemDialog
+  },
   data() {
     return {
-      emptyGif: 'https://wpimg.wallstcn.com/0e03b7da-db9e-4819-ba10-9016ddfdaed3'
-    }
+      tasks: [],
+      notices: [
+        { id: 1, title: '通告1' },
+        { id: 2, title: '通告2' },
+        { id: 3, title: '通告3' }
+      ],
+      approvals: [
+        { id: 1, title: '审批1' },
+        { id: 2, title: '审批2' },
+        { id: 3, title: '审批3' }
+      ]
+    };
   },
-  computed: {
-    ...mapGetters([
-      'name',
-      'avatar',
-      'roles'
-    ])
-  }
-}
-</script>
-
-<style lang="scss" scoped>
-  .emptyGif {
-    display: block;
-    width: 45%;
-    margin: 0 auto;
-  }
-
-  .dashboard-editor-container {
-    background-color: #e3e3e3;
-    min-height: 100vh;
-    padding: 50px 60px 0px;
-    .pan-info-roles {
-      font-size: 12px;
-      font-weight: 700;
-      color: #333;
-      display: block;
-    }
-    .info-container {
-      position: relative;
-      margin-left: 190px;
-      height: 150px;
-      line-height: 200px;
-      .display_name {
-        font-size: 48px;
-        line-height: 48px;
-        color: #212121;
-        position: absolute;
-        top: 25px;
+  mounted() {
+    this.mytaskList()
+  },
+  methods: {
+    /**
+     * 查询我的任务
+     */
+    async mytaskList() {
+      let res = await taskApi.getMyTaskList(this.tasks.name)
+      //判断是否存在数据
+      if (res.success) {
+        //获取数据
+        this.tasks = res.data.map(task => ({
+          id: task.id,
+          name: task.name
+        }));
       }
     }
   }
+};
+</script>
+<style scoped>
+.plus {
+  margin-left: 100px;
+  margin-top: 30px;
+}
+
+.card {
+  margin: 0 10px;
+}
 </style>
