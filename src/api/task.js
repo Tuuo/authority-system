@@ -5,8 +5,8 @@ export default {
 * 添加任务
 * @returns
 */
-    async addMyTask(data) {
-        return await http.put("/api/homePage/add", data)
+    async addMyTask(params) {
+        return await http.post("/api/homePage/add", params)
 
     },
 

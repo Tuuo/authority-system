@@ -246,11 +246,7 @@ export default {
                 }
             });
         },
-        /**
-        * 选择所属菜单
-        */
-        selectParentMenu() {
-        },
+        
         /**
          * 选择所属菜单
         */
