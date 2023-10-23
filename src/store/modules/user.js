@@ -63,7 +63,7 @@ const actions = {
           reject('Verification failed, please Login again.')
         }
         //从后端返回的data数据中解构出用户相关的信息
-        const { roles, name, avatar, introduction ,id} = data
+        const { roles, name, avatar, introduction ,userId} = data
 
         // roles must be a non-empty array
         if (!roles || roles.length <= 0) {
@@ -75,7 +75,7 @@ const actions = {
         commit('SET_NAME', name)
         commit('SET_AVATAR', avatar)
         commit('SET_INTRODUCTION', introduction)
-        commit('SET_USERUID', id)
+        commit('SET_USERUID', userId)
         resolve(data)
       }).catch(error => {
         reject(error)

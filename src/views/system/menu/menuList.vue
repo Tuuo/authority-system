@@ -312,6 +312,7 @@ export default {
          */
         editMenu(row) {
             //把当前要编辑的数据复制到数据域，给表单回显
+            console.log(row);
             this.$objCopy(row, this.menu)
             //设置弹框属性
             this.menuDialog.title = "编辑菜单"

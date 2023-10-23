@@ -1,7 +1,7 @@
 import http from '@/utils/request'
 
 export function getRoutes() {
-  
+
 }
 
 /**
@@ -10,15 +10,15 @@ export function getRoutes() {
  * @returns 
  */
 export async function getRoles(params) {
-  return await http.get('/api/role/list',params)
+  return await http.get('/api/role/list', params)
 }
 
 export async function addRole(data) {
-  return await http.post('/api/role/add',data)
+  return await http.post('/api/role/add', data)
 }
 
 export async function updateRole(data) {
-  return await http.put('/api/role/update',data)
+  return await http.put('/api/role/update', data)
 
 }
 /**
@@ -27,7 +27,7 @@ export async function updateRole(data) {
  * @returns 
  */
 export async function checkRole(params) {
-  return await http.getRestApi('/api/role/check',params)
+  return await http.getRestApi('/api/role/check', params)
 }
 
 /**
@@ -36,20 +36,24 @@ export async function checkRole(params) {
  * @returns 
  */
 export async function deleteRole(params) {
-  return await http.delete('/api/role/delete',params)
+  return await http.delete('/api/role/delete', params)
 }
 /**
  * 查询分配权限树列表
  * 
  */
-export async function getAssignTree(params){
-  return await http.get('/api/role/getAssignPermissionTree',params)
+export async function getAssignTree(params) {
+  return await http.get('/api/role/getAssignPermissionTree', params)
 }
 /**
 * 分配权限
 * @returns
 */
-export async function assignSave(params){
-  return await http.post("/api/role/saveRoleAssign",params);
-  }
+export async function assignSave(params) {
+  return await http.post("/api/role/saveRoleAssign", params);
+}
+
+export async function getId(params) {
+  return await http.post('/api/role/getId', params)
+}
 
