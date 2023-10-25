@@ -297,7 +297,7 @@ export default {
             this.$resetForm('menuForm', this.menu) //清空表单数据
             //清空图标选择器
             this.$nextTick(() => {
-                this.$refs.child.userChooseIcon = "";
+                this.$refs["child"].userChooseIcon = "";
             })
             this.menuDialog.title = '新增菜单' //设置窗口标题
             this.menuDialog.visible = true //显示窗口
