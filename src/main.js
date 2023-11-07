@@ -19,6 +19,8 @@ import './permission' // permission control
 import './utils/error-log' // error log
 
 import * as filters from './filters' // global filters
+// import FileSaver from 'file-saver'
+import XLSX from 'xlsx'
 
 /**
  * If you don't want to use mock-server
@@ -39,7 +41,7 @@ import resetForm from '@/utils/resetForm'
 
 //导入快速复制对象工具
 import objCopy from '@/utils/objCopy'
-
+Vue.prototype.$XLSX = XLSX
 Vue.prototype.$objCopy = objCopy;
 Vue.prototype.$resetForm = resetForm;
 

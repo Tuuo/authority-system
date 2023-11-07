@@ -3,66 +3,72 @@
         <el-row>
 
             <el-col :span="18">
-                <div class="content">
-                    <h2>个人信息</h2>
-                    <el-tabs>
 
-                        <!-- <el-descriptions :model="personalFrom" title="用户信息"> -->
-                        <el-descriptions class="margin-top" :model="personalFrom" title="用户信息" :column="3" :size="size"
-                            border>
-                            <template slot="extra">
-                                <el-button type="primary" @click="handleProcess" size="small">编辑</el-button>
-                            </template>
-                            <el-descriptions-item label="姓名">{{ basicList.name }}</el-descriptions-item>
-                            <el-descriptions-item label="身份证号">{{ basicList.cardId }}</el-descriptions-item>
-                            <el-descriptions-item label="性别">
-                                {{ basicList.gender }}
-                            </el-descriptions-item>
-                            <el-descriptions-item label="出生年月">
-                                {{ basicList.birthday }}
-                            </el-descriptions-item>
-                            <el-descriptions-item label="文化程度">
-                                {{ basicList.education }}
-                            </el-descriptions-item>
-                            <el-descriptions-item label="籍贯">
-                                {{ basicList.birthplace }}
-                            </el-descriptions-item>
-                            <el-descriptions-item label="民族">
-                                {{ basicList.nation }}
-                            </el-descriptions-item>
-                            <el-descriptions-item label="政治面貌">
-                                {{ basicList.politics }}
-                            </el-descriptions-item>
-                            <el-descriptions-item label="婚姻">
-                                {{ basicList.marriage }}
-                            </el-descriptions-item>
-                        </el-descriptions>
-                    </el-tabs>
-                </div>
-                <div class="content">
-                    <h2>直系亲人</h2>
+                <h2>个人信息</h2>
+                <el-tabs v-model="activeTab" @tab-click="handleTabClick">
+                    <el-tab-pane label="个人信息" name="approval">
+                        <div class="content">
+                            <!-- <el-descriptions :model="personalFrom" title="用户信息"> -->
+                            <el-descriptions class="margin-top" :model="personalFrom" title="用户信息" :column="3" :size="size"
+                                border>
+                                <template slot="extra">
+                                    <el-button type="primary" @click="handleProcess" size="small">编辑</el-button>
+                                </template>
+                                <el-descriptions-item label="姓名">{{ basicList.name }}</el-descriptions-item>
+                                <el-descriptions-item label="身份证号">{{ basicList.cardId }}</el-descriptions-item>
+                                <el-descriptions-item label="性别">
+                                    {{ basicList.gender }}
+                                </el-descriptions-item>
+                                <el-descriptions-item label="出生年月">
+                                    {{ basicList.birthday }}
+                                </el-descriptions-item>
+                                <el-descriptions-item label="文化程度">
+                                    {{ basicList.education }}
+                                </el-descriptions-item>
+                                <el-descriptions-item label="籍贯">
+                                    {{ basicList.birthplace }}
+                                </el-descriptions-item>
+                                <el-descriptions-item label="民族">
+                                    {{ basicList.nation }}
+                                </el-descriptions-item>
+                                <el-descriptions-item label="政治面貌">
+                                    {{ basicList.politics }}
+                                </el-descriptions-item>
+                                <el-descriptions-item label="婚姻">
+                                    {{ basicList.marriage }}
+                                </el-descriptions-item>
+                            </el-descriptions>
+                        </div>
+                    </el-tab-pane>
 
-                    <div>
-                        <el-button type="primary" @click="openWindows">新增</el-button>
-                    </div>
-                    <el-table :data="familyList" style="width: 100%">
-                        <el-table-column prop="id" label="编号"></el-table-column>
-                        <el-table-column prop="name" label="姓名"></el-table-column>
-                        <el-table-column prop="relation" label="关系"></el-table-column>
-                        <el-table-column prop="work" label="工作"></el-table-column>
-                        <el-table-column prop="nowJob" label="职务"></el-table-column>
+                    <el-tab-pane label="直系亲人" name="handled">
 
-                        <el-table-column label="操作" width="200" align="center">
-                            <template slot-scope="scope">
-                                <el-button type="primary" icon="el-icon-edit" size="small" @click="editFamily(scope.row)">编辑
-                                </el-button>
-                                <el-button type="danger" size="small" icon="el-icon-delete"
-                                    @click="deleteFamily(scope.row)">删除
-                                </el-button>
-                            </template>
-                        </el-table-column>
-                    </el-table>
-                </div>
+                        <div class="content">
+                            <div>
+                                <el-button type="primary" @click="openWindows">新增</el-button>
+                            </div>
+                            <el-table :data="familyList" style="width: 100%">
+                                <el-table-column prop="id" label="编号"></el-table-column>
+                                <el-table-column prop="name" label="姓名"></el-table-column>
+                                <el-table-column prop="relation" label="关系"></el-table-column>
+                                <el-table-column prop="work" label="工作"></el-table-column>
+                                <el-table-column prop="nowJob" label="职务"></el-table-column>
+
+                                <el-table-column label="操作" width="200" align="center">
+                                    <template slot-scope="scope">
+                                        <el-button type="primary" icon="el-icon-edit" size="small"
+                                            @click="editFamily(scope.row)">编辑
+                                        </el-button>
+                                        <el-button type="danger" size="small" icon="el-icon-delete"
+                                            @click="deleteFamily(scope.row)">删除
+                                        </el-button>
+                                    </template>
+                                </el-table-column>
+                            </el-table>
+                        </div>
+                    </el-tab-pane>
+                </el-tabs>
+
             </el-col>
         </el-row>
         <system-dialog :title="approvalDialog.title" :visible="approvalDialog.visible" :width="approvalDialog.width"
@@ -256,6 +262,8 @@ export default {
                 label: '离婚'
             }
             ],
+            activeTab: 'approval',
+
             formData: {
                 id: '',
                 name: '',
@@ -315,7 +323,7 @@ export default {
                 roleName: this.name
             }
             let obj = await getId(paramssr)
-           
+
             this.basicId = obj.data.id - 1;
             // console.log(this.basicId);
             // console.log(obj);
@@ -424,6 +432,9 @@ export default {
                 }
             });
         },
+        handleTabClick(tab) {
+            // 处理标签切换逻辑
+        },
         editFamily(row) {
             //把当前要编辑的数据复制到数据域，给表单回显
             console.log(row);
@@ -453,13 +464,13 @@ export default {
             }
         }
 
-},
-mounted() {
+    },
+    mounted() {
 
-    this.search()
+        this.search()
 
-    this.myhandled();
-},
+        this.myhandled();
+    },
 };
 </script>
     

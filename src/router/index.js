@@ -167,9 +167,58 @@ export const asyncRoutes = [
           title: 'Role Permission',
           roles: ['admin']
         }
-      }
+      },
+      // {
+      //   path:'abroad',
+      //   component:() => import('@/views/perManagement/index'),
+      //   name:'Abroad',
+      //   meta:{title:'出境管理',icon:'el-icon-location'},
+      //   alwaysShow:true,
+      //   children:[
+      //     {
+      //       path:'return',
+      //       component:() => import('@/views/perManagement/abroad/return'),
+      //       name:'Return',
+      //       meta:{title:'证件借还',icon:'el-icon-s-check'}
+      //     }
+      //   ]
+      // }
     ]
   },
+  // {
+  //   path: '/perManagement',
+  //   component: Layout,
+  //   redirect: '/perManagement/index',
+  //   name: 'hxBank',
+  //   meta: {
+  //     title: '出境管理',
+  //     icon: 'el-icon-s-help'
+  //   },
+  //   children: [
+  //     {	// 二级菜单1
+
+  //     },
+
+  //     {
+  //       path: 'abroad',
+  //       component: () => import('@/views/perManagement/index'),
+  //       name: 'Abroad',
+  //       meta: { title: '出境管理', icon: 'el-icon-location' },
+  //       alwaysShow: true,
+  //       children: [
+  //         {
+  //           path: 'return',
+  //           component: () => import('@/views/perManagement/abroad/return'),
+  //           name: 'Return',
+  //           meta: { title: '证件借还', icon: 'el-icon-s-check' }
+  //         }
+  //       ]
+  //     }
+
+
+  //   ]
+  // },
+
 
   {
     path: '/icon',

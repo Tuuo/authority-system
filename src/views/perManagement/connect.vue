@@ -6,25 +6,29 @@
             </el-col>
             <el-col :span="18">
                 <div class="content">
-                    <h2>通告管理</h2>
+                    <h2>交接管理</h2>
                     <el-tabs v-model="activeTab" @tab-click="handleTabClick">
-                        <el-tab-pane label="分组管理" name="approval">
-                            <el-form :model="searchModel" ref="searchForm" label-width="80px" :inline="true" size="small">
+                        <el-tab-pane label="交接管理" name="approval">
+                            <el-form :model="searchModel" ref="searchForm" label-width="90px" :inline="true" size="small">
                                 <el-form-item>
-                                    <el-input v-model="searchModel.groupName" placeholder="请输入分组名称" />
+                                    <el-input v-model="searchModel.name" placeholder="请输入姓名" />
                                 </el-form-item>
                                 <el-form-item>
                                     <el-button type="primary" icon="el-icon-search"
                                         @click="search(pageNo, pageSize)">查询</el-button>
-                                    <el-button type="success" icon="el-icon-plus" @click="openAddWindow()">新增</el-button>
+                                    <el-button type="success" icon="el-icon-plus" @click="openAddWindow()">申请</el-button>
                                 </el-form-item>
                             </el-form>
 
 
                             <el-table :data="approvalList" style="width: 100%">
                                 <el-table-column prop="id" label="编号"></el-table-column>
-                                <el-table-column prop="groupName" label="分组名"></el-table-column>
-                                <el-table-column prop="groupPerson" label="分组人员"></el-table-column>
+                                <el-table-column prop="name" label="姓名"></el-table-column>
+                                <el-table-column prop="department" label="所在部门"></el-table-column>
+                                <el-table-column prop="job" label="职务"></el-table-column>
+                                <el-table-column prop="personType" label="人员类别"></el-table-column>
+                                <el-table-column prop="leftType" label="离岗类别"></el-table-column>
+                                <el-table-column prop="status" label="交接状态"></el-table-column>
                                 <el-table-column label="操作" width="200" align="center">
 
                                     <template slot-scope="scope">
@@ -43,27 +47,42 @@
                                 layout="total, sizes, prev, pager, next, jumper" :total="total">
                             </el-pagination>
                         </el-tab-pane>
-                        <el-tab-pane label="通告管理" name="handled">
+                        
+                        <el-tab-pane label="离职管理" name="handled">
                             <el-form :model="searchNoModel" ref="searchNoForm" label-width="80px" :inline="true"
                                 size="small">
                                 <el-form-item>
-                                    <el-input v-model="searchNoModel.title" placeholder="请输入标题" />
+                                    <el-input v-model="searchNoModel.name" placeholder="请输入姓名" />
                                 </el-form-item>
                                 <el-form-item>
                                     <el-button type="primary" icon="el-icon-search"
                                         @click="searchNO(pageNo2, pageSize2)">查询</el-button>
                                     <el-button type="success" icon="el-icon-plus" @click="openNoAddWindow()">新增</el-button>
+                                    <el-button type="success" icon="el-icon-plus" @click="exportExcel()">导出</el-button>
+
                                 </el-form-item>
                             </el-form>
                             <div class="document-approval">
-                                <el-table :data="handledList" style="width: 100%">
+                                <el-table ref="multipleTable" :data="handledList" tooltip-effect="dark" style="width: 100%"
+                                @selection-change="handleSelectionChange" id="tableId">
+                                    <el-table-column type="selection" width="55">
+                                </el-table-column>
                                     <el-table-column prop="id" label="编号"></el-table-column>
-                                    <el-table-column prop="name" label="接收人"></el-table-column>
-                                    <el-table-column prop="title" label="标题"></el-table-column>
-                                    <el-table-column prop="type" label="类型"></el-table-column>
-                                    <el-table-column prop="content" label="内容"></el-table-column>
-                                    <el-table-column prop="send" label="发送方式"></el-table-column>
-                                    <el-table-column prop="reply" label="回复方式"></el-table-column>
+                                    <el-table-column prop="department" label="部门"></el-table-column>
+                                    <el-table-column prop="name" label="姓名"></el-table-column>
+                                    <el-table-column prop="cardId" label="身份证号"></el-table-column>
+                                    <el-table-column prop="specialty" label="专业"></el-table-column>
+                                    <el-table-column prop="gender" label="性别"></el-table-column>
+                                    <el-table-column prop="startDate" label="入职日期" width="125px">
+                                        <template slot-scope="scope">
+                                            {{ formatDate(scope.row.startDate) }}
+                                        </template>
+                                    </el-table-column>
+                                    <el-table-column prop="endDate" label="离岗日期" width="125px">
+                                        <template slot-scope="scope">
+                                            {{ formatDate(scope.row.endDate) }}
+                                        </template>
+                                    </el-table-column>
                                     <el-table-column label="操作" width="200" align="center">
 
                                         <template slot-scope="scope">
@@ -84,21 +103,41 @@
                             </div>
                         </el-tab-pane>
                     </el-tabs>
-
                 </div>
             </el-col>
         </el-row>
         <system-dialog :title="approvalDialog.title" :visible="approvalDialog.visible" :width="approvalDialog.width"
             :height="approvalDialog.height" @onClose="onApprovalClose" @onConfirm="onApprovalConfirm">
             <div slot="content">
-                <el-form :model="group" ref="groupFrom" label-width="80px" :inline="false" size="small">
+                <el-form :model="group" ref="groupFrom" label-width="90px" :inline="false" size="small">
 
-                    <el-form-item label="分组名称" prop="groupName">
-                        <el-input v-model="group.groupName"></el-input>
+                    <el-form-item label="姓名" prop="name">
+                        <el-input v-model="group.name"></el-input>
                     </el-form-item>
 
-                    <el-form-item label="分组人员" prop="groupPerson">
-                        <el-input v-model="group.groupPerson"></el-input>
+                    <el-form-item label="所在部门" prop="department">
+                        <el-input v-model="group.department"></el-input>
+                    </el-form-item>
+                    <el-form-item label="职务" prop="job">
+                        <el-input v-model="group.job"></el-input>
+                    </el-form-item>
+                   
+                    <el-form-item label="人员类别" prop="personType">
+                        <el-select v-model="group.personType" placeholder="请选择" class="tasks" @change="onEducationSelectOption">
+                            <el-option v-for="item in typeOptions" :key="item.value" :label="item.label"
+                                :value="item.value">
+                            </el-option>
+                        </el-select>
+                    </el-form-item>
+                    <el-form-item label="离岗类别" prop="leftType">
+                        <el-select v-model="group.leftType" placeholder="请选择" class="tasks" @change="onLeftSelectOption">
+                            <el-option v-for="item in leftTypeOptions" :key="item.value" :label="item.label"
+                                :value="item.value">
+                            </el-option>
+                        </el-select>
+                    </el-form-item>
+                    <el-form-item label="交接状态" prop="status">
+                        <el-input v-model="group.status"></el-input>
                     </el-form-item>
 
                 </el-form>
@@ -107,39 +146,39 @@
         <system-dialog :title="handledDialog.title" :visible="handledDialog.visible" :width="handledDialog.width"
             :height="handledDialog.height" @onClose="onHandledClose" @onConfirm="onHandledConfirm">
             <div slot="content">
-                <el-form :model="handled" ref="noFrom" label-width="80px" :inline="false" size="small">
-
-                    <el-form-item label="接收人" prop="name">
+                <el-form :model="handled" ref="noFrom" label-width="100px" :inline="false" size="small">
+                    <el-form-item label="部门" prop="department">
+                        <el-input v-model="handled.department"></el-input>
+                    </el-form-item>
+                    <el-form-item label="人员" prop="name">
                         <el-input v-model="handled.name"></el-input>
                     </el-form-item>
+                    <el-form-item label="身份证号" prop="cardId">
+                        <el-input v-model="handled.cardId"></el-input>
+                    </el-form-item>
+                    <el-form-item label="专业" prop="specialty">
+                        <el-input v-model="handled.specialty"></el-input>
+                    </el-form-item>
+                    <el-form-item label="性别" prop="gender">
+                        <el-input v-model="handled.gender"></el-input>
+                    </el-form-item>
 
-                    <el-form-item label="标题" prop="title">
-                        <el-input v-model="handled.title"></el-input>
+                    
+                    
+                    <el-form-item label="入职时间">
+                        <el-col :span="11">
+                            <el-date-picker type="date" placeholder="选择日期" v-model="handled.startDate"
+                                value-format="yyyy-MM-dd">></el-date-picker>
+                        </el-col>
                     </el-form-item>
-                    <el-form-item label="类型" prop="type">
-                        <el-select v-model="handled.type" placeholder="请选择" class="tasks" @change="onEducationSelectOption">
-                            <el-option v-for="item in typeOptions" :key="item.value" :label="item.label"
-                                :value="item.value">
-                            </el-option>
-                        </el-select>
+                    <el-form-item label="离岗日期">
+                        <el-col :span="11">
+                            <el-date-picker type="date" placeholder="选择日期" v-model="handled.endDate"
+                                value-format="yyyy-MM-dd">></el-date-picker>
+                        </el-col>
                     </el-form-item>
-                    <el-form-item label="内容" prop="content">
-                        <el-input v-model="handled.content"></el-input>
-                    </el-form-item>
-                    <el-form-item label="发送方式" prop="send">
-                        <el-select v-model="handled.send" placeholder="请选择" class="tasks" @change="onSendSelectOption">
-                            <el-option v-for="item in sendOptions" :key="item.value" :label="item.label"
-                                :value="item.value">
-                            </el-option>
-                        </el-select>
-                    </el-form-item>
-                    <el-form-item label="回复方式" prop="reply">
-                        <el-select v-model="handled.reply" placeholder="请选择" class="tasks" @change="onReplySelectOption">
-                            <el-option v-for="item in replyOptions" :key="item.value" :label="item.label"
-                                :value="item.value">
-                            </el-option>
-                        </el-select>
-                    </el-form-item>
+                    
+
 
 
 
@@ -151,8 +190,10 @@
     
 <script>
 import SystemDialog from '@/components/system/SystemDialog.vue';
-import groupApi from '@/api/group'
-import notiApi from '@/api/notification'
+import connectApi from '@/api/connect';
+import FileSaver from 'file-saver';
+import XLSX from 'xlsx'
+import dimissionApi from '@/api/dimission'
 export default {
     name: 'myApproval',
     components: {
@@ -163,16 +204,17 @@ export default {
         return {
             //查询条件
             searchModel: {
-                groupName: '',//角色名称
-                title: '',
+                name: '',
                 pageNo: 1,
                 pageSize: 2,
             },
             searchNoModel: {
-                title: '',
+                name: '',
                 pageNo: 1,
                 pageSize: 2,
             },
+            activeTab: 'approval',
+
             roleList: [], //数据列表
             tableHeight: 0, //表格高度
             pageNo: 1, //当前页码
@@ -184,7 +226,7 @@ export default {
             pageSize2: 2, //每页显示数量
             total2: 0, //总数量
             handledSelectedOption: '',
-            sendSelectedOption: '',
+            leftSelectedOption: '',
             replySelectedOption: '',
             dialogVisible: false,
             approvalDialog: {
@@ -202,52 +244,48 @@ export default {
             searchKeyword: '',
             searchType: '',
             approvals: [],
-            approvalsForm: {
-                groupName: '',
-                groupPerson: ''
-            },
-            activeTab: 'approval',
 
 
             group: {
                 id: '',
-                groupName: '',
-                groupPerson: ''
+                name: '',
+                department:'',
+                job:'',
+                personType:'',
+                leftType:'',
+                status:''
             },
             activeTab: 'approval',
 
             typeOptions: [{
                 value: '1',
-                label: '通知'
+                label: '在编'
             }, {
                 value: '2',
-                label: '公告'
-            },
+                label: '外聘'
+            }
             ],
-            sendOptions: [{
+            leftTypeOptions: [{
                 value: '1',
-                label: '邮件'
+                label: '退休'
             }, {
                 value: '2',
-                label: '站内'
-            },
-            ],
-            replyOptions: [{
-                value: '1',
-                label: '自动已读'
+                label: '调动'
             }, {
-                value: '2',
-                label: '回复已读'
-            },
+                value: '3',
+                label: '辞职'
+            }
             ],
+
             handled: {
                 id: '',
-                name: '',
-                title: '',
-                type: '',
-                content: '',
-                send: '',
-                reply: ''
+                department:'',
+                name:'',
+                cardId:'',
+                specialty:'',
+                gender:'',
+                startDate:'',
+                endDate:''
             },
 
             approvalValue: '',
@@ -258,6 +296,13 @@ export default {
         };
     },
     methods: {
+        handleTabClick(tab) {
+            // 处理标签切换逻辑
+        },
+        formatDate(date) {
+            const options = { year: 'numeric', month: 'long', day: 'numeric' };
+            return new Date(date).toLocaleDateString(undefined, options);
+        },
 
         async search(pageNo = 1, pageSize = 2) {
             //修改当前页码
@@ -265,7 +310,7 @@ export default {
             //修改每页显示数量
             this.searchModel.pageSize = pageSize;
             //发生查询请求
-            let res = await groupApi.getList(this.searchModel);
+            let res = await connectApi.getList(this.searchModel);
             // console.log(res);
             //判断是否成功
             if (res.success) {
@@ -282,7 +327,7 @@ export default {
             //修改每页显示数量
             this.searchNoModel.pageSize = pageSize;
             //发生查询请求
-            let res = await notiApi.getList(this.searchNoModel);
+            let res = await dimissionApi.getList(this.searchNoModel);
             // console.log(res);
             //判断是否成功
             if (res.success) {
@@ -293,29 +338,21 @@ export default {
             }
         },
         onEducationSelectOption() {
-            const selectedLabel = this.typeOptions.find(option => option.value === this.handled.type)?.label;
+            const selectedLabel = this.typeOptions.find(option => option.value === this.group.personType)?.label;
             console.log("selectedLabel:" + selectedLabel);
             if (selectedLabel) {
                 this.handledSelectedOption = selectedLabel;
             }
         },
-        onSendSelectOption() {
-            const selectedLabel = this.sendOptions.find(option => option.value === this.handled.send)?.label;
+        onLeftSelectOption() {
+            console.log(this.leftTypeOptions);
+            const selectedLabel = this.leftTypeOptions.find(option => option.value === this.group.leftType)?.label;
             console.log("selectedLabel:" + selectedLabel);
             if (selectedLabel) {
-                this.sendSelectedOption = selectedLabel;
+                this.leftSelectedOption = selectedLabel;
             }
         },
-        onReplySelectOption() {
-            const selectedLabel = this.replyOptions.find(option => option.value === this.handled.reply)?.label;
-            console.log("selectedLabel:" + selectedLabel);
-            if (selectedLabel) {
-                this.replySelectedOption = selectedLabel;
-            }
-        },
-        handleTabClick(tab) {
-            // 处理标签切换逻辑
-        },
+
 
 
         openAddWindow() {
@@ -324,7 +361,7 @@ export default {
             // 清空表单数据
             this.$resetForm("groupFrom", this.group);
 
-            this.approvalDialog.title = '新增分组'; // 设置窗口标题
+            this.approvalDialog.title = '新增交接管理'; // 设置窗口标题
             this.approvalDialog.visible = true; // 显示窗口
         },
         openNoAddWindow() {
@@ -332,7 +369,7 @@ export default {
 
             // 清空表单数据
             this.$resetForm("noFrom", this.handled);
-            this.handledDialog.title = '新增通告'; // 设置窗口标题
+            this.handledDialog.title = '新增离岗申请'; // 设置窗口标题
             this.handledDialog.visible = true; // 显示窗口
         },
 
@@ -349,18 +386,20 @@ export default {
                     let res = null;
                     //发送添加请求
                     // console.log(this.approvalsForm.opinion);
-
+                    this.group.personType = this.handledSelectedOption;
+                    this.group.leftType = this.leftSelectedOption;
+                    console.log(this.group);
 
                     if (this.group.id === "") {
-                        res = await groupApi.addGroup(this.group);
+                        res = await connectApi.addMeeting(this.group);
 
                     } else {
-                        res = await groupApi.updateGroup(this.group)
+                        res = await connectApi.updateMeeting(this.group)
 
                     }
                     // console.log(params);
                     //判断是否成功
-                    console.log(res);
+                    // console.log(res);
                     if (res.success) {
                         this.$message.success(res.message);
                         this.search(this.pageNo, this.pageSize);
@@ -380,18 +419,17 @@ export default {
                     let res = null;
                     //发送添加请求
                     // console.log(this.approvalsForm.opinion);
-                    console.log(this.handled);
-                    this.handled.type = this.handledSelectedOption;
-                    this.handled.send = this.sendSelectedOption
-                    this.handled.reply = this.replySelectedOption
+                    // console.log(this.handled);
+                    // this.handled.type = this.handledSelectedOption;
 
-                    console.log(this.handled);
+
+                    // console.log(this.handled);
 
                     if (this.handled.id === "") {
-                        res = await notiApi.addNoti(this.handled);
+                        res = await dimissionApi.addMeeting(this.handled);
 
                     } else {
-                        res = await notiApi.updateNoti(this.handled)
+                        res = await dimissionApi.updateMeeting(this.handled)
 
                     }
                     // console.log(params);
@@ -415,7 +453,7 @@ export default {
             //数据回显
             this.$objCopy(row, this.group);
             //设置窗口标题
-            this.approvalDialog.title = "编辑分组"
+            this.approvalDialog.title = "编辑交接管理"
             //显示编辑角色窗口
             this.approvalDialog.visible = true
         },
@@ -425,7 +463,7 @@ export default {
             let confirm = await this.$myconfirm("确认要删除该数据吗？")
             if (confirm) {
                 //发送删除请求
-                let res = await groupApi.deleteById({ id: row.id })
+                let res = await connectApi.deleteById({ id: row.id })
                 //判断是否成功
                 if (res.success) {
                     //成功提示
@@ -444,7 +482,7 @@ export default {
             //数据回显
             this.$objCopy(row, this.handled);
             //设置窗口标题
-            this.handledDialog.title = "编辑通告"
+            this.handledDialog.title = "编辑离岗申请"
             //显示编辑角色窗口
             this.handledDialog.visible = true
         },
@@ -454,7 +492,7 @@ export default {
             let confirm = await this.$myconfirm("确认要删除该数据吗？")
             if (confirm) {
                 //发送删除请求
-                let res = await notiApi.deleteById({ id: row.id })
+                let res = await dimissionApi.deleteById({ id: row.id })
                 //判断是否成功
                 if (res.success) {
                     //成功提示
@@ -496,9 +534,52 @@ export default {
             // console.log(page);
             // console.log(this.pageSize2);
             this.searchNO(page, this.pageSize2); // 执行搜索方法
-            console.log(this.pageNo2);
+            // console.log(this.pageNo2);
 
         },
+        toggleSelection(rows) {
+            if (rows) {
+                rows.forEach(row => {
+                    this.$refs.multipleTable.toggleRowSelection(row);
+                });
+            } else {
+                this.$refs.multipleTable.clearSelection();
+            }
+        },
+        handleSelectionChange(val) {
+            this.multipleSelection = val;
+        },
+        exportExcel() {
+            if (this.multipleSelection.length === 0) {
+                // 如果没有勾选任何项，则提示用户选择内容
+                alert("请选择要导出的内容");
+                return;
+            }
+
+            // 创建一个新的Workbook对象
+            let wb = XLSX.utils.book_new();
+
+            // 创建一个名为 "Exported Data" 的工作表
+            let ws = XLSX.utils.json_to_sheet(this.multipleSelection);
+            XLSX.utils.book_append_sheet(wb, ws, "Exported Data");
+
+            // 将Workbook对象转换为字节数组
+            let wbout = XLSX.write(wb, {
+                bookType: "xlsx",
+                bookSST: true,
+                type: "array",
+            });
+
+            // 保存为Excel文件
+            try {
+                FileSaver.saveAs(
+                    new Blob([wbout], { type: "application/octet-stream" }),
+                    "导出详情单.xlsx"
+                );
+            } catch (e) {
+                if (typeof console !== "undefined") console.log(e, wbout);
+            }
+        }
     },
     mounted() {
         this.search();

@@ -6,119 +6,50 @@
             </el-col>
             <el-col :span="18">
                 <div class="content">
-                    <h2>伙食管理</h2>
-                    <el-tabs v-model="activeTab" @tab-click="handleTabClick">
-                        <el-tab-pane label="充值信息统计" name="approval">
-                            <el-form :model="searchModel" ref="searchForm" label-width="80px" :inline="true" size="small">
+                    <h2>工资统计</h2>
 
-                                <el-form-item>
-                                    <el-button type="success" icon="el-icon-plus" @click="exportExcel()">导出</el-button>
-                                </el-form-item>
-                            </el-form>
+                    <el-form :model="searchModel" ref="searchForm" label-width="80px" :inline="true" size="small">
 
-                            <el-table ref="multipleTable" :data="approvalList" tooltip-effect="dark" style="width: 100%"
-                                @selection-change="handleSelectionChange" id="tableId">
-                                <el-table-column type="selection" width="55">
-                                </el-table-column>
-                                <el-table-column prop="id" label="序号"></el-table-column>
-                                <el-table-column prop="name" label="账号名称"></el-table-column>
-                                <el-table-column prop="type" label="账号类型"></el-table-column>
-                                <el-table-column prop="num" label="数量"></el-table-column>
-                                <el-table-column prop="price" label="金额"></el-table-column>
-                                <el-table-column prop="eatDate" label="用餐日期" width="125px">
-                                    <template slot-scope="scope">
-                                        {{ formatDate(scope.row.eatDate) }}
-                                    </template>
-                                </el-table-column>
-                                <el-table-column prop="status" label="状态"></el-table-column>
+                        <el-form-item>
+                            <!-- <el-upload class="upload-demo" action="http://localhost:9001/api/salary/add"
+                                :on-preview="handlePreview" :on-remove="handleRemove" :before-remove="beforeRemove" multiple
+                                :limit="3" :on-exceed="handleExceed" :file-list="fileList" :on-change="handleFileUpload">
+                                <el-button size="small" type="primary">点击上传</el-button>
+                                <div slot="tip" class="el-upload__tip">只能上传jpg/png文件，且不超过500kb</div>
+                            </el-upload> -->
+                            导入： <input type="file" @change="handleFileUpload" />
+                        </el-form-item>
+                    </el-form>
 
-                            </el-table>
-                            <!-- 分页工具栏 -->
-                            <el-pagination @size-change="handleSizeChange" @current-change="handleCurrentChange"
-                                :current-page="pageNo" :page-sizes="[2, 4, 10, 20, 30]" :page-size="2"
-                                layout="total, sizes, prev, pager, next, jumper" :total="total">
-                            </el-pagination>
-                        </el-tab-pane>
-                        <el-tab-pane label="汇总菜品" name="handled">
-                            <el-form :model="searchModel" ref="searchForm" label-width="80px" :inline="true" size="small">
-                                <el-form-item>
-                                    <el-input v-model="searchModel.title" placeholder="请输入标题" />
-                                </el-form-item>
-                                <el-form-item>
-                                    <el-button type="primary" icon="el-icon-search"
-                                        @click="searchNO(pageNo, pageSize)">查询</el-button>
-                                    <el-button type="success" icon="el-icon-plus" @click="openNoAddWindow()">新增</el-button>
-                                </el-form-item>
-                            </el-form>
-                            <div class="document-approval">
-                                <el-table :data="handledList" style="width:100%">
-                                    <el-table-column prop="id" label="序号" width="50px"></el-table-column>
-                                    <el-table-column prop="type" label="类型"></el-table-column>
-                                    <el-table-column prop="name" label="名称"></el-table-column>
-                                    <el-table-column prop="originalPrice" label="原价"></el-table-column>
-                                    <el-table-column prop="nowPrice" label="优惠价"></el-table-column>
+                    <el-table ref="multipleTable" :data="approvalList" tooltip-effect="dark" style="width: 100%"
+                        @selection-change="handleSelectionChange" id="tableId">
 
-                                    <el-table-column label="操作" width="200" align="center">
+                        <el-table-column prop="id" label="编号"></el-table-column>
+                        <el-table-column prop="name" label="姓名"></el-table-column>
+                        <el-table-column prop="cardId" label="身份证号"></el-table-column>
+                        <el-table-column prop="moon" label="月份"></el-table-column>
+                        <el-table-column prop="money" label="应发工资"></el-table-column>
+                        <el-table-column prop="reMoney" label="实发工资"></el-table-column>
+                    </el-table>
+                    <!-- 分页工具栏 -->
+                    <el-pagination @size-change="handleSizeChange" @current-change="handleCurrentChange"
+                        :current-page="pageNo" :page-sizes="[2, 4, 10, 20, 30]" :page-size="2"
+                        layout="total, sizes, prev, pager, next, jumper" :total="total">
+                    </el-pagination>
 
-                                        <template slot-scope="scope">
-                                            <el-button icon="el-icon-edit" type="primary" size="small"
-                                                @click="notiEdit(scope.row)">编辑
-                                            </el-button>
-                                            <el-button icon="el-icon-delete" type="danger" size="small"
-                                                @click="notiDelete(scope.row)">删除
-                                            </el-button>
-                                        </template>
-                                    </el-table-column>
-                                </el-table>
-                                <!-- 分页工具栏 -->
-                                <el-pagination @size-change="notiSizeChange" @current-change="notiCurrentChange"
-                                    :current-page="pageNo2" :page-sizes="[2, 4, 10, 20, 30]" :page-size="2"
-                                    layout="total, sizes, prev, pager, next, jumper" :total="total2">
-                                </el-pagination>
-                            </div>
-                        </el-tab-pane>
-                    </el-tabs>
                 </div>
             </el-col>
         </el-row>
 
-        <system-dialog :title="handledDialog.title" :visible="handledDialog.visible" :width="handledDialog.width"
-            :height="handledDialog.height" @onClose="onHandledClose" @onConfirm="onHandledConfirm">
-            <div slot="content">
-                <el-form :model="handled" ref="noFrom" label-width="90px" :inline="false" size="small">
-
-                    <el-form-item label="类型" prop="type">
-                        <el-select v-model="handled.type" placeholder="请选择" class="tasks" @change="onEducationSelectOption">
-                            <el-option v-for="item in typeOptions" :key="item.value" :label="item.label"
-                                :value="item.value">
-                            </el-option>
-                        </el-select>
-                    </el-form-item>
-                    <el-form-item label="名称" prop="name">
-                        <el-input v-model="handled.name"></el-input>
-                    </el-form-item>
-                    <el-form-item label="原价" prop="originalPrice">
-                        <el-input v-model="handled.originalPrice"></el-input>
-                    </el-form-item>
-
-                    <el-form-item label="优惠价" prop="nowPrice">
-                        <el-input v-model="handled.nowPrice"></el-input>
-                    </el-form-item>
-
-
-
-                </el-form>
-            </div>
-        </system-dialog>
     </div>
 </template>
     
 <script>
 import SystemDialog from '@/components/system/SystemDialog.vue';
-import topUpApi from '@/api/topUp'
 import eggSet from '@/api/eggSet';
 import FileSaver from 'file-saver';
 import XLSX from 'xlsx'
+import salaryApi from '@/api/salary';
 export default {
     name: 'myApproval',
     components: {
@@ -127,6 +58,7 @@ export default {
     data() {
 
         return {
+            fileList: [],
             multipleSelection: [],
             //查询条件
             searchModel: {
@@ -209,6 +141,65 @@ export default {
         };
     },
     methods: {
+        handleRemove(file, fileList) {
+            console.log(file, fileList);
+        },
+        handlePreview(file) {
+            console.log(file);
+        },
+        handleExceed(files, fileList) {
+            this.$message.warning(`当前限制选择 3 个文件，本次选择了 ${files.length} 个文件，共选择了 ${files.length + fileList.length} 个文件`);
+        },
+        beforeRemove(file, fileList) {
+            return this.$confirm(`确定移除 ${file.name}？`);
+        },
+
+        handleFileUpload(event) {
+            const fileList = event.target.files;
+            const file = fileList[0];
+            // const file = event.target.files[0];
+            const reader = new FileReader();
+            let tableData = null;
+
+            reader.onload = (e) => {
+                const data = new Uint8Array(e.target.result);
+                const workbook = XLSX.read(data, { type: 'array' });
+                const worksheet = workbook.Sheets[workbook.SheetNames[0]];
+
+                const jsonData = XLSX.utils.sheet_to_json(worksheet, { header: 1 });
+                const headers = jsonData.shift();
+                tableData = jsonData.map((row) => {
+                    const rowData = {};
+                    headers.forEach((header, index) => {
+                        rowData[header] = row[index];
+                    });
+                    return rowData;
+                });
+
+                this.approvalList = tableData;
+                console.log(this.approvalList);
+                this.saveToDatabase(this.approvalList); // 调用保存到数据库的方法
+            };
+
+            reader.readAsArrayBuffer(file);
+        },
+        async saveToDatabase(data) {
+            console.log(data);
+            try {
+                const promises = data.map(async (item) => {
+                    const res = await salaryApi.addMeeting(item);
+                    console.log(res);
+                    return res;
+                });
+
+                const results = await Promise.all(promises);
+                console.log(results);
+            } catch (error) {
+                console.error(error);
+            }
+        },
+
+
         formatDate(date) {
             const options = { year: 'numeric', month: 'long', day: 'numeric' };
             return new Date(date).toLocaleDateString(undefined, options);
@@ -220,7 +211,7 @@ export default {
             //修改每页显示数量
             this.searchModel.pageSize = pageSize;
             //发生查询请求
-            let res = await topUpApi.getList(this.searchModel);
+            let res = await salaryApi.getList(this.searchModel);
             // console.log(res);
             //判断是否成功
             if (res.success) {
