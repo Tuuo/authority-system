@@ -499,8 +499,11 @@ export default {
         * 当页码发生变化时触发该事件
         */
         notiCurrentChange(page) {
-            this.pageNo2 = page
-            this.searchNO(page, this.pageSize2);
+            this.pageNo2 = page; // 更新当前页码
+            // console.log(page);
+            // console.log(this.pageSize2);
+            this.searchNO(page, this.pageSize2); // 执行搜索方法
+            // console.log(this.pageNo2);
         },
     },
     mounted() {

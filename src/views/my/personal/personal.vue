@@ -347,7 +347,9 @@ export default {
                     politics: res.data[this.basicId].politics,
                     marriage: res.data[this.basicId].marriage
                 };
+
             }
+            console.log(this.basicList);
         },
 
         handleProcess() {
@@ -368,7 +370,6 @@ export default {
 
 
                     console.log(params);
-                    console.log(this.personalFrom.id);
 
                     //发送修改请求
                     res = await basicApi.updateBasic(params)

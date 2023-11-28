@@ -12,7 +12,8 @@
               <div class="search-bar">
                 <div slot="content">
                   <el-form :model="approvalsForm" ref="approvalsForm" label-width="80px" :inline="false" size="small">
-                    <el-select v-model="approvalsForm.name" placeholder="请选择" class="tasks" @change="onApprovalSelectOption">
+                    <el-select v-model="approvalsForm.name" placeholder="请选择" class="tasks"
+                      @change="onApprovalSelectOption">
                       <el-option v-for="item in approvalOptions" :key="item.value" :label="item.label"
                         :value="item.value">
                       </el-option>
@@ -163,7 +164,7 @@ export default {
       // this.approvalSelectedOption = selectedLabel;
       console.log(this.approvalSelectedOption);
       let params = {
-        name:this.approvalSelectedOption
+        name: this.approvalSelectedOption
       }
       let res = await approvalApi.getApproval(params);
       console.log(res);
@@ -176,7 +177,7 @@ export default {
 
     onApprovalSelectOption() {
       const selectedLabel = this.approvalOptions.find(option => option.value === this.approvalsForm.name)?.label;
-      console.log("selectedLabel:"+selectedLabel);
+      console.log("selectedLabel:" + selectedLabel);
       if (selectedLabel) {
         this.approvalSelectedOption = selectedLabel;
       }
