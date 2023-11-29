@@ -381,7 +381,7 @@ export default {
         },
         notiEdit(row) {
             //数据回显
-            this.$objCopy(row, this.group);
+            this.$objCopy(row, this.handled);
             //设置窗口标题
             this.handledDialog.title = "编辑菜品"
             //显示编辑角色窗口

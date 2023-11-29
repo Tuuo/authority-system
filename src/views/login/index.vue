@@ -28,6 +28,18 @@
           </span>
         </el-form-item>
       </el-tooltip>
+      <el-form-item prop="verifycode">
+        <el-input v-model="loginForm.verifycode" placeholder="请输入验证码" class="identifyinput">
+        </el-input>
+      </el-form-item>
+      <el-form-item>
+        <div class="identifybox">
+          <div @click="refreshCode">
+            <s-identify :identifyCode="identifyCode"></s-identify>
+          </div>
+          <el-button @click="refreshCode" type='text' class="textbtn">看不清，换一张</el-button>
+        </div>
+      </el-form-item>
 
       <el-button :loading="loading" type="primary" style="width:100%;margin-bottom:30px;"
         @click.native.prevent="handleLogin">登录</el-button>
@@ -38,26 +50,45 @@
 
 <script>
 import SocialSign from './components/SocialSignin'
+import SIdentify from "@/api/canvas"
 
 export default {
   name: 'Login',
-  components: { SocialSign },
+  components: { SocialSign
+   , SIdentify },
   data() {
+    /* 自定义验证码规则 */
+    const validateVerifycode = (rule, value, callback) => {
+      if (value === '') {
+        callback(new Error('请输入验证码'))
+      } else if (value !== this.identifyCode) {
+        callback(new Error('验证码不正确!'))
+      } else {
+        callback()
+      }
+    }
     return {
       loginForm: {
         username: '',
-        password: ''
+        password: '',
+        verifycode: ''
       },
       loginRules: {
         username: [{ required: true, trigger: 'blur', message: '用户名不能为空' }],
-        password: [{ required: true, trigger: 'blur', message: '密码不能为空' }]
+        password: [{ required: true, trigger: 'blur', message: '密码不能为空' }],
+        verifycode: [{
+          required: true,
+          trigger: 'blur',
+          validator: validateVerifycode,}]
       },
       passwordType: 'password',
       capsTooltip: false,
       loading: false,
       showDialog: false,
       redirect: undefined,
-      otherQuery: {}
+      otherQuery: {},
+      identifyCodes: '1234567890abcdefghijklmnopqrstuvwxyz',
+      identifyCode: '',
     }
   },
   watch: {
@@ -73,9 +104,20 @@ export default {
     }
   },
   created() {
-    // window.addEventListener('storage', this.afterQRScan)
+    this.refreshVerifyCode();
   },
   mounted() {
+    // this.identifyCode='';
+    // this.makeCode(this.identifyCodes,4);
+    // history.pushState(null, null, document.URL);
+    // if (window.history && window.history.pushState) {
+    //   $(window).on('popstate', function (){
+    //     window.history.pushState('forward', null, '');
+    //     window.history.forward(1);
+    //   });
+    //   window.history.pushState('forward', null, ''); //在IE中必须得有这两行
+    //   window.history.forward(1);
+    // }
     if (this.loginForm.username === '') {
       this.$refs.username.focus()
     } else if (this.loginForm.password === '') {
@@ -86,6 +128,22 @@ export default {
     // window.removeEventListener('storage', this.afterQRScan)
   },
   methods: {
+    randomNum(min, max) {
+      return Math.floor(Math.random() * (max - min) + min)
+    },
+    // 切换验证码
+    refreshCode() {
+      this.identifyCode = ''
+      this.makeCode(this.identifyCodes, 4)
+    },
+    makeCode(o, l) {
+      for (let i = 0; i < l; i++) {
+        this.identifyCode += this.identifyCodes[
+          this.randomNum(0, this.identifyCodes.length)]
+      }
+      console.log(this.identifyCode)
+      /* alert(this.identifyCode) */
+    },
     checkCapslock(e) {
       const { key } = e
       this.capsTooltip = key && key.length === 1 && (key >= 'A' && key <= 'Z')
@@ -100,35 +158,40 @@ export default {
         this.$refs.password.focus()
       })
     },
+    refreshVerifyCode() {
+      this.verifyCodeUrl = '/verifyCode?t=' + new Date().getTime();
+    },
     handleLogin() {
       //表单验证
       this.$refs.loginForm.validate((valid) => {
         //如果验证通过
-        if (valid) {
-          //开启进度条
-          this.loading = true;
-          //调用src/store/modules/user.js中的login方法
-          this.$store
-            .dispatch("user/login", this.loginForm)
-            .then(() => {
-              //路由转发到指定地址
-              this.$router.push({
-                path: this.redirect || "/",
-                query: this.otherQuery,
-              });
-              //关闭进度条
-              this.loading = false;
-            })
-            .catch(() => {
-              //关闭进度条
-              this.loading = false;
+      if (valid) {
+        //开启进度条
+        this.loading = true;
+        //调用src/store/modules/user.js中的login方法
+        this.$store
+          .dispatch("user/login", this.loginForm)
+          .then(() => {
+            //路由转发到指定地址
+            this.$router.push({
+              path: this.redirect || "/",
+              query: this.otherQuery,
             });
-        } else {
-          console.log("error submit!!");
-          return false;
-        }
-      });
+            //关闭进度条
+            this.loading = false;
+          })
+          .catch(() => {
+            //关闭进度条
+            this.loading = false;
+          });
+      } else {
+        console.log("error submit!!");
+        return false;
+      }
+    });
     },
+   
+
 
     getOtherQuery(query) {
       return Object.keys(query).reduce((acc, cur) => {
@@ -139,23 +202,7 @@ export default {
       }, {})
     }
     // afterQRScan() {
-    //   if (e.key === 'x-admin-oauth-code') {
-    //     const code = getQueryObject(e.newValue)
-    //     const codeMap = {
-    //       wechat: 'code',
-    //       tencent: 'code'
-    //     }
-    //     const type = codeMap[this.auth_type]
-    //     const codeName = code[type]
-    //     if (codeName) {
-    //       this.$store.dispatch('LoginByThirdparty', codeName).then(() => {
-    //         this.$router.push({ path: this.redirect || '/' })
-    //       })
-    //     } else {
-    //       alert('第三方登录失败')
-    //     }
-    //   }
-    // }
+
   }
 }
 </script>
@@ -274,6 +321,12 @@ $light_gray: #eee;
     right: 0;
     bottom: 6px;
   }
+  .identifybox {
+   display: flex;
+   justify-content: space-between;
+   margin-top: 7px;
+  }
+
 
   @media only screen and (max-width: 470px) {
     .thirdparty-button {

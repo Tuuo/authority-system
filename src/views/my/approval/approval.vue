@@ -176,6 +176,7 @@ export default {
     },
 
     onApprovalSelectOption() {
+      console.log(this.approvalOptions);
       const selectedLabel = this.approvalOptions.find(option => option.value === this.approvalsForm.name)?.label;
       console.log("selectedLabel:" + selectedLabel);
       if (selectedLabel) {

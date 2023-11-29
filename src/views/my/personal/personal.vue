@@ -296,21 +296,22 @@ export default {
 
 
         onEducationSelectOption() {
-            const selectedLabel = this.educationOptions.find(option => option.value === this.personalFrom.education)?.label;
+            // console.log(this.educationOptions);
+            const selectedLabel = this.educationOptions.find(option => option.value === this.formData.education)?.label;
             console.log("selectedLabel:" + selectedLabel);
             if (selectedLabel) {
                 this.educationSelectedOption = selectedLabel;
             }
         },
         onPoliticsSelectOption() {
-            const selectedLabel = this.politicsOptions.find(option => option.value === this.personalFrom.politics)?.label;
+            const selectedLabel = this.politicsOptions.find(option => option.value === this.formData.politics)?.label;
             console.log("selectedLabel:" + selectedLabel);
             if (selectedLabel) {
                 this.politicsSelectedOption = selectedLabel;
             }
         },
         onMarriageSelectOption() {
-            const selectedLabel = this.marriageOptions.find(option => option.value === this.personalFrom.marriage)?.label;
+            const selectedLabel = this.marriageOptions.find(option => option.value === this.formData.marriage)?.label;
             console.log("selectedLabel:" + selectedLabel);
             if (selectedLabel) {
                 this.marriageSelectedOption = selectedLabel;
@@ -349,7 +350,7 @@ export default {
                 };
 
             }
-            console.log(this.basicList);
+            // console.log(this.basicList);
         },
 
         handleProcess() {
@@ -367,7 +368,9 @@ export default {
                 if (valid) {
                     let res = null;
                     const params = { ...this.formData };
-
+                    params.education=this.educationSelectedOption;
+                    params.politics=this.politicsSelectedOption
+                    params.marriage-this.marriageSelectedOption
 
                     console.log(params);
 
