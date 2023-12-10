@@ -6,7 +6,10 @@ export default {
     },
     async deleteById(params) {
         return await http.delete("/api/gift/delete", params);
-    }
+    },
+    async addMeeting(params) {
+        return await http.post("/api/gift/add", params);
+    },
    
 
 

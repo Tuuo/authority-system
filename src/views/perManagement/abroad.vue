@@ -108,8 +108,8 @@
                                 </el-form-item>
                                 <el-form-item>
                                     <el-button type="primary" icon="el-icon-search"
-                                        @click="searchNO(pageNo, pageSize)">查询</el-button>
-                                    <el-button type="success" icon="el-icon-plus" @click="openNoAddWindow()">新增</el-button>
+                                        @click="searchHO(pageNo, pageSize)">查询</el-button>
+                                    <el-button type="success" icon="el-icon-plus" @click="openHoAddWindow()">新增</el-button>
                                 </el-form-item>
                             </el-form>
                             <div class="document-approval">
@@ -249,6 +249,27 @@
                 </el-form>
             </div>
         </system-dialog>
+        <system-dialog :title="giftDialog.title" :visible="giftDialog.visible" :width="giftDialog.width"
+            :height="giftDialog.height" @onClose="ongiftClose" @onConfirm="ongiftConfirm">
+            <div slot="content">
+                <el-form :model="gift" ref="hoFrom" label-width="110px" :inline="false" size="small">
+
+                    <el-form-item label="礼物名称" prop="name">
+                        <el-input v-model="gift.name"></el-input>
+                    </el-form-item>
+                    <el-form-item label="礼品期">
+                        <el-col :span="11">
+                            <el-date-picker type="date" placeholder="选择日期" v-model="gift.giftDate"
+                                value-format="yyyy-MM-dd">></el-date-picker>
+                        </el-col>
+                    </el-form-item>
+                    <el-form-item label="历史未领取人" prop="person">
+                        <el-input v-model="gift.person"></el-input>
+                    </el-form-item>
+                    
+                </el-form>
+            </div>
+        </system-dialog>
         <system-dialog :title="abroadDialog.title" :visible="abroadDialog.visible" :width="abroadDialog.width"
             :height="abroadDialog.height" @onClose="onAbroadClose" @onConfirm="onAbroadConfirm">
             <div slot="content">
@@ -368,6 +389,12 @@ export default {
                 height: 250,
                 width: 400
             },
+            giftDialog: {
+                title: '',
+                visible: false,
+                height: 250,
+                width: 400
+            },
             searchKeyword: '',
             searchType: '',
             approvals: [],
@@ -408,6 +435,12 @@ export default {
                 title: '',
                 start: '',
                 upEnd: ''
+            },
+            gift: {
+                id: '',
+                name:'',
+                giftDate:'',
+                person:''
             },
 
             approvalValue: '',
@@ -519,6 +552,14 @@ export default {
             this.handledDialog.title = '新增汇总'; // 设置窗口标题
             this.handledDialog.visible = true; // 显示窗口
         },
+        openHoAddWindow() {
+
+
+            // 清空表单数据
+            this.$resetForm("hoFrom", this.gift);
+            this.giftDialog.title = '新增礼品'; // 设置窗口标题
+            this.giftDialog.visible = true; // 显示窗口
+        },
         openAoAddWindow() {
 
 
@@ -536,6 +577,9 @@ export default {
         },
         onHandledClose() {
             this.handledDialog.visible = false
+        },
+        ongiftClose() {
+            this.giftDialog.visible = false
         },
         onApprovalConfirm() {
             //表单验证
@@ -636,13 +680,44 @@ export default {
 
             });
         },
+        ongiftConfirm() {
+            //表单验证
+            this.$refs.hoFrom.validate(async (valid) => {
+                if (valid) {
+                    let res = null;
+                    //发送添加请求
+                    // console.log(this.approvalsForm.opinion);
+                    // console.log(this.handled);
+                    // this.abroad.type = this.handledSelectedOption;
+
+                    // console.log(this.handled);
+
+                    if (this.gift.id === "") {
+                        res = await giftApi.addMeeting(this.gift);
+
+                    } 
+                    // console.log(params);
+                    //判断是否成功
+                    console.log(res);
+                    if (res.success) {
+                        this.$message.success(res.message);
+                        this.searchHO(this.pageNo, this.pageSize);
+                        //关闭窗口
+                        this.giftDialog.visible = false;
+                    } else {
+                        this.$message.error(res.message);
+                    }
+                }
+
+            });
+        },
 
 
         handleEdit(row) {
             //数据回显
             this.$objCopy(row, this.group);
             //设置窗口标题
-            this.approvalDialog.title = "编辑报修"
+            this.approvalDialog.title = "编辑证件借还"
             //显示编辑角色窗口
             this.approvalDialog.visible = true
         },

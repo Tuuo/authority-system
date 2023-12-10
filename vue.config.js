@@ -41,7 +41,7 @@ module.exports = {
     //代理配置
     proxy: {
       [process.env.VUE_APP_BASE_API]: {
-        target: "http://172.20.10.2:9001/api",
+        target: "http://localhost:9001/api",
         changeOrigin: true,
         pathRewrite: {
           '^/api': ''
