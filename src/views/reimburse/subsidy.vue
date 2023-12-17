@@ -14,7 +14,7 @@
                                 <el-form-item>
                                     <el-button type="primary" icon="el-icon-search"
                                         @click="search(pageNo, pageSize)">查询</el-button>
-                                    <el-button type="success" icon="el-icon-plus" @click="openAddWindow()">新增</el-button>
+                                    <el-button type="success" icon="el-icon-plus" @click="openAddWindow()">申请</el-button>
                                 </el-form-item>
                             </el-form>
 
@@ -45,7 +45,7 @@
                             </el-table>
                             <!-- 分页工具栏 -->
                             <el-pagination @size-change="handleSizeChange" @current-change="handleCurrentChange"
-                                :current-page="pageNo" :page-sizes="[2, 4, 10, 20, 30]" :page-size="2"
+                                :current-page="pageNo" :page-sizes="[5, 10, 20, 30, 40]" :page-size="5"
                                 layout="total, sizes, prev, pager, next, jumper" :total="total">
                             </el-pagination>
                         </el-tab-pane>
@@ -58,7 +58,7 @@
                                 <el-form-item>
                                     <el-button type="primary" icon="el-icon-search"
                                         @click="searchNO(pageNo, pageSize)">查询</el-button>
-                                    <el-button type="success" icon="el-icon-plus" @click="openNoAddWindow()">新增</el-button>
+                                    <el-button type="success" icon="el-icon-plus" @click="openNoAddWindow()">申请</el-button>
                                 </el-form-item>
                             </el-form>
                             <div class="document-approval">
@@ -92,57 +92,54 @@
                                 </el-table>
                                 <!-- 分页工具栏 -->
                                 <el-pagination @size-change="notiSizeChange" @current-change="notiCurrentChange"
-                                    :current-page="pageNo2" :page-sizes="[2, 4, 10, 20, 30]" :page-size="2"
+                                    :current-page="pageNo2" :page-sizes="[5, 10, 20, 30, 40]" :page-size="5"
                                     layout="total, sizes, prev, pager, next, jumper" :total="total2">
                                 </el-pagination>
                             </div>
                         </el-tab-pane>
 
 
-                        <el-tab-pane label="慰问金申请" name="gift">
+                        <el-tab-pane label="外聘费申请" name="gift">
                             <el-form :model="searchHoModel" ref="searchHoForm" label-width="100px" :inline="true"
                                 size="small">
                                 <el-form-item>
-                                    <el-input v-model="searchHoModel.name" placeholder="请输入礼品名称" />
+                                    <el-input v-model="searchHoModel.name" placeholder="请输入姓名" />
                                 </el-form-item>
                                 <el-form-item>
                                     <el-button type="primary" icon="el-icon-search"
-                                        @click="searchNO(pageNo, pageSize)">查询</el-button>
-                                    <el-button type="success" icon="el-icon-plus" @click="openNoAddWindow()">新增</el-button>
+                                        @click="searchHO(pageNo, pageSize)">查询</el-button>
+                                    <el-button type="success" icon="el-icon-plus" @click="openHoAddWindow()">申请</el-button>
                                 </el-form-item>
                             </el-form>
                             <div class="document-approval">
                                 <el-table :data="giftList" style="width:100%">
                                     <el-table-column prop="id" label="编号"></el-table-column>
-                                    <el-table-column prop="name" label="礼品名称"></el-table-column>
-
-                                    <el-table-column prop="giftDate" label="礼品期">
-                                        <template slot-scope="scope">
-                                            {{ formatDate(scope.row.giftDate) }}
-                                        </template>
-                                    </el-table-column>
-                                    <el-table-column prop="person" label="历史未领取人"></el-table-column>
+                                    <el-table-column prop="name" label="姓名"></el-table-column>
+                                    <el-table-column prop="money" label="费用"></el-table-column>
+                                    <el-table-column prop="signature" label="签领人签名"></el-table-column>
 
 
 
                                     <el-table-column label="操作" width="200" align="center">
 
                                         <template slot-scope="scope">
-
+                                            <el-button icon="el-icon-edit" type="primary" size="small"
+                                                @click="hotiEdit(scope.row)">编辑
+                                            </el-button>
                                             <el-button icon="el-icon-delete" type="danger" size="small"
-                                                @click="yitiDelete(scope.row)">已领
+                                                @click="hotiDelete(scope.row)">删除
                                             </el-button>
                                         </template>
                                     </el-table-column>
                                 </el-table>
                                 <!-- 分页工具栏 -->
                                 <el-pagination @size-change="notiSizeChange2" @current-change="notiCurrentChange2"
-                                    :current-page="pageNo3" :page-sizes="[2, 4, 10, 20, 30]" :page-size="2"
+                                    :current-page="pageNo3" :page-sizes="[5, 10, 20, 30, 40]" :page-size="5"
                                     layout="total, sizes, prev, pager, next, jumper" :total="total3">
                                 </el-pagination>
                             </div>
                         </el-tab-pane>
-                        <el-tab-pane label="外聘费申请" name="abroad">
+                        <el-tab-pane label="慰问金申请" name="abroad">
                             <el-form :model="searchAoModel" ref="searchAoForm" label-width="100px" :inline="true"
                                 size="small">
                                 <el-form-item>
@@ -151,27 +148,18 @@
                                 <el-form-item>
                                     <el-button type="primary" icon="el-icon-search"
                                         @click="searchAO(pageNo, pageSize)">查询</el-button>
-                                    <el-button type="success" icon="el-icon-plus" @click="openAoAddWindow()">新增</el-button>
+                                    <el-button type="success" icon="el-icon-plus" @click="openAoAddWindow()">申请</el-button>
                                 </el-form-item>
                             </el-form>
                             <div class="document-approval">
                                 <el-table :data="abroadList" style="width:100%">
                                     <el-table-column prop="id" label="编号" width="50px"></el-table-column>
-                                    <el-table-column prop="name" label="姓名"></el-table-column>
-                                    <el-table-column prop="type" label="类型"></el-table-column>
+                                    <el-table-column prop="person" label="经办人"></el-table-column>
+                                    <el-table-column prop="name" label="收款人"></el-table-column>
+                                    <el-table-column prop="username" label="账号"></el-table-column>
+                                    <el-table-column prop="money" label="付款金额"></el-table-column>
 
-                                    <el-table-column prop="start" label="开始时间" width="125px">
-                                        <template slot-scope="scope">
-                                            {{ formatDate(scope.row.start) }}
-                                        </template>
-                                    </el-table-column>
-                                    <el-table-column prop="end" label="结束时间" width="125px">
-                                        <template slot-scope="scope">
-                                            {{ formatDate(scope.row.end) }}
-                                        </template>
-                                    </el-table-column>
                                     <el-table-column prop="reason" label="原因"></el-table-column>
-                                    <el-table-column prop="location" label="目的地"></el-table-column>
                                     <el-table-column label="操作" width="200" align="center">
 
                                         <template slot-scope="scope">
@@ -185,7 +173,7 @@
                                     </el-table-column>
                                 </el-table>
                                 <el-pagination @size-change="notiSizeChange3" @current-change="notiCurrentChange3"
-                                    :current-page="pageNo4" :page-sizes="[2, 4, 10, 20, 30]" :page-size="2"
+                                    :current-page="pageNo4" :page-sizes="[5, 10, 20, 30, 40]" :page-size="5"
                                     layout="total, sizes, prev, pager, next, jumper" :total="total4">
                                 </el-pagination>
                             </div>
@@ -271,17 +259,18 @@
             <div slot="content">
                 <el-form :model="gift" ref="hoFrom" label-width="110px" :inline="false" size="small">
 
-                    <el-form-item label="礼物名称" prop="name">
+                    <el-form-item label="姓名" prop="name">
                         <el-input v-model="gift.name"></el-input>
                     </el-form-item>
-                    <el-form-item label="礼品期">
-                        <el-col :span="11">
-                            <el-date-picker type="date" placeholder="选择日期" v-model="gift.giftDate"
-                                value-format="yyyy-MM-dd">></el-date-picker>
-                        </el-col>
+                    <el-form-item label="费用" prop="money">
+                        <el-input v-model="gift.money"></el-input>
                     </el-form-item>
-                    <el-form-item label="历史未领取人" prop="person">
-                        <el-input v-model="gift.person"></el-input>
+                
+                    <el-form-item label="签领人签名" prop="signature">
+                        <el-select v-model="group.signature" placeholder="请选择" class="tasks" @change="onSignatureSelectOption">
+                            <el-option v-for="item in SignatureOptions" :key="item.value" :label="item.label" :value="item.value">
+                            </el-option>
+                        </el-select>
                     </el-form-item>
 
                 </el-form>
@@ -292,34 +281,24 @@
             <div slot="content">
                 <el-form :model="abroad" ref="aoFrom" label-width="110px" :inline="false" size="small">
 
-                    <el-form-item label="姓名" prop="name">
+                    <el-form-item label="经办人" prop="person">
+                        <el-input v-model="abroad.person"></el-input>
+                    </el-form-item>
+                    <el-form-item label="收款人" prop="name">
                         <el-input v-model="abroad.name"></el-input>
                     </el-form-item>
-                    <el-form-item label="类型" prop="type">
-                        <el-select v-model="abroad.type" placeholder="请选择" class="tasks" @change="onEducationSelectOption">
-                            <el-option v-for="item in typeOptions" :key="item.value" :label="item.label"
-                                :value="item.value">
-                            </el-option>
-                        </el-select>
+                    <el-form-item label="账号">
+                        <el-input v-model="abroad.username"></el-input>
+
                     </el-form-item>
-                    <el-form-item label="开始时间">
-                        <el-col :span="11">
-                            <el-date-picker type="date" placeholder="选择日期" v-model="abroad.start"
-                                value-format="yyyy-MM-dd">></el-date-picker>
-                        </el-col>
+                    <el-form-item label="付款金额">
+                        <el-input v-model="abroad.money"></el-input>
+
                     </el-form-item>
-                    <el-form-item label="结束时间">
-                        <el-col :span="11">
-                            <el-date-picker type="date" placeholder="选择日期" v-model="abroad.end"
-                                value-format="yyyy-MM-dd">></el-date-picker>
-                        </el-col>
-                    </el-form-item>
-                    <el-form-item label="原因" prop="reason">
+                    <el-form-item label="付款事由" prop="reason">
                         <el-input v-model="abroad.reason"></el-input>
                     </el-form-item>
-                    <el-form-item label="目的地" prop="location">
-                        <el-input v-model="abroad.location"></el-input>
-                    </el-form-item>
+    
                 </el-form>
             </div>
         </system-dialog>
@@ -330,8 +309,8 @@
 import SystemDialog from '@/components/system/SystemDialog.vue';
 import overtimeMoneyApi from '@/api/overtimeMoney';
 import payApi from '@/api/pay'
-import giftApi from '@/api/gift'
-import abroadApi from '@/api/abroad'
+import giftApi from '@/api/condolence'
+import abroadApi from '@/api/Weiwen'
 export default {
     name: 'myApproval',
     components: {
@@ -344,50 +323,51 @@ export default {
             searchModel: {
                 person: '',//角色名称
                 pageNo: 1,
-                pageSize: 2,
+                pageSize: 5,
             },
             searchNoModel: {
                 name: '',//角色名称
                 pageNo: 1,
-                pageSize: 2,
+                pageSize: 5,
             },
             searchHoModel: {
                 name: '',//角色名称
                 pageNo: 1,
-                pageSize: 2,
+                pageSize: 5,
             },
             searchAoModel: {
                 name: '',//角色名称
                 pageNo: 1,
-                pageSize: 2,
+                pageSize: 5,
             },
             roleList: [], //数据列表
             tableHeight: 0, //表格高度
             pageNo: 1, //当前页码
-            pageSize: 2, //每页显示数量
+            pageSize: 5, //每页显示数量
             total: 0, //总数量
 
             roleList2: [], //数据列表
             tableHeight2: 0, //表格高度
             pageNo2: 1, //当前页码
-            pageSize2: 2, //每页显示数量
+            pageSize2: 5, //每页显示数量
             total2: 0, //总数量
 
             roleList3: [], //数据列表
             tableHeight3: 0, //表格高度
             pageNo3: 1, //当前页码
-            pageSize3: 2, //每页显示数量
+            pageSize3: 5, //每页显示数量
             total3: 0, //总数量
 
             roleList4: [], //数据列表
             tableHeight4: 0, //表格高度
             pageNo4: 1, //当前页码
-            pageSize4: 2, //每页显示数量
+            pageSize4: 5, //每页显示数量
             total4: 0, //总数量
             handledSelectedOption: '',
             paySelectedOption: '',
             overtimeSelectedOption: '',
-
+            SignatureSelectedOption:'',
+            
             dialogVisible: false,
             approvalDialog: {
                 title: '',
@@ -432,12 +412,11 @@ export default {
             },
             abroad: {
                 id: '',
-                name: '',
-                type: '',
-                start: '',
-                end: '',
-                reason: '',
-                location: '',
+                person:'',
+                name:'',
+                username:'',
+                money:'',
+                reason:''
             },
             activeTab: 'approval',
 
@@ -469,6 +448,14 @@ export default {
                 label: '节假日'
             },
             ],
+            SignatureOptions: [{
+                value: '1',
+                label: '是'
+            }, {
+                value: '2',
+                label: '否'
+            }
+            ],
 
             handled: {
                 id: '',
@@ -483,8 +470,8 @@ export default {
             gift: {
                 id: '',
                 name:'',
-                giftDate:'',
-                person:''
+                money:'',
+                signature:''
             },
 
             approvalValue: '',
@@ -594,6 +581,13 @@ export default {
                 this.overtimeSelectedOption = selectedLabel;
             }
         },
+        onSignatureSelectOption() {
+            const selectedLabel = this.SignatureOptions.find(option => option.value === this.gift.signature)?.label;
+            console.log("selectedLabel:" + selectedLabel);
+            if (selectedLabel) {
+                this.SignatureSelectedOption = selectedLabel;
+            }
+        },
 
 
 
@@ -619,7 +613,7 @@ export default {
 
             // 清空表单数据
             this.$resetForm("aoFrom", this.abroad);
-            this.abroadDialog.title = '新增出境申请'; // 设置窗口标题
+            this.abroadDialog.title = '新增申请'; // 设置窗口标题
             this.abroadDialog.visible = true; // 显示窗口
         },
         openHoAddWindow() {
@@ -627,7 +621,7 @@ export default {
 
             // 清空表单数据
             this.$resetForm("hoFrom", this.gift);
-            this.giftDialog.title = '新增礼品'; // 设置窗口标题
+            this.giftDialog.title = '新增申请'; // 设置窗口标题
             this.giftDialog.visible = true; // 显示窗口
         },
 
@@ -717,7 +711,7 @@ export default {
                     //发送添加请求
                     // console.log(this.approvalsForm.opinion);
                     // console.log(this.handled);
-                    // this.abroad.type = this.handledSelectedOption;
+                    this.gift.signature = this.SignatureSelectedOption;
 
                     // console.log(this.handled);
 
@@ -748,7 +742,7 @@ export default {
                     //发送添加请求
                     // console.log(this.approvalsForm.opinion);
                     // console.log(this.handled);
-                    this.abroad.type = this.handledSelectedOption;
+                    // this.abroad.type = this.handledSelectedOption;
 
                     // console.log(this.handled);
 
@@ -809,9 +803,17 @@ export default {
             //数据回显
             this.$objCopy(row, this.handled);
             //设置窗口标题
-            this.handledDialog.title = "编辑加班补助"
+            this.handledDialog.title = "编辑"
             //显示编辑角色窗口
             this.handledDialog.visible = true
+        },
+        hotiEdit(row) {
+            //数据回显
+            this.$objCopy(row, this.gift);
+            //设置窗口标题
+            this.giftDialog.title = "编辑外聘费"
+            //显示编辑角色窗口
+            this.giftDialog.visible = true
         },
 
         async notiDelete(row) {
@@ -838,7 +840,7 @@ export default {
             //数据回显
             this.$objCopy(row, this.abroad);
             //设置窗口标题
-            this.abroadDialog.title = "编辑结果"
+            this.abroadDialog.title = "编辑"
             //显示编辑角色窗口
             this.abroadDialog.visible = true
         },
@@ -855,6 +857,26 @@ export default {
                     this.$message.success(res.message)
                     //刷新
                     this.searchAO(this.pageNo, this.pageSize)
+
+                } else {
+                    //失败提示
+                    this.$message.error(res.message)
+                }
+            }
+
+        },
+        async hotiDelete(row) {
+            //确认是否删除
+            let confirm = await this.$myconfirm("确认要删除该数据吗？")
+            if (confirm) {
+                //发送删除请求
+                let res = await giftApi.deleteById({ id: row.id })
+                //判断是否成功
+                if (res.success) {
+                    //成功提示
+                    this.$message.success(res.message)
+                    //刷新
+                    this.searchHO(this.pageNo, this.pageSize)
 
                 } else {
                     //失败提示

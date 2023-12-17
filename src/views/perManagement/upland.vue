@@ -123,7 +123,7 @@
                             </el-table>
                             <!-- 分页工具栏 -->
                             <el-pagination @size-change="handleSizeChange2" @current-change="handleCurrentChange2"
-                                :current-page="pageNo2" :page-sizes="[2, 4, 10, 20, 30]" :page-size="2"
+                                :current-page="pageNo2" :page-sizes="[5, 10, 20, 30, 40]" :page-size="5"
                                 layout="total, sizes, prev, pager, next, jumper" :total="total2">
                             </el-pagination>
 
@@ -174,7 +174,7 @@
                             </el-table>
                             <!-- 分页工具栏 -->
                             <el-pagination @size-change="handleSizeChange3" @current-change="handleCurrentChange3"
-                                :current-page="pageNo3" :page-sizes="[2, 4, 10, 20, 30]" :page-size="2"
+                                :current-page="pageNo3" :page-sizes="[5, 10, 20, 30, 40]" :page-size="5"
                                 layout="total, sizes, prev, pager, next, jumper" :total="total3">
                             </el-pagination>
 
@@ -389,12 +389,12 @@ export default {
             searchNoModel: {
                 name: '',//角色名称
                 pageNo: 1,
-                pageSize: 2,
+                pageSize: 5,
             },
             searchHoModel: {
                 name: '',//角色名称
                 pageNo: 1,
-                pageSize: 2,
+                pageSize: 5,
             },
             userList: [], //用户列表
             pageNo: 1, //当前页码
@@ -405,14 +405,14 @@ export default {
             roleList2: [], //数据列表
             tableHeight2: 0, //表格高度
             pageNo2: 1, //当前页码
-            pageSize2: 2, //每页显示数量
+            pageSize2: 5, //每页显示数量
             total2: 0, //总数量
 
 
             roleList3: [], //数据列表
             tableHeight3: 0, //表格高度
             pageNo3: 1, //当前页码
-            pageSize3: 2, //每页显示数量
+            pageSize3: 5, //每页显示数量
             total3: 0, //总数量
             userDialog: {
                 title: '',
