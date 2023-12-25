@@ -625,7 +625,7 @@ export default {
                 this.total = res.data.total;
             }
         },
-        async searchNo(pageNo = 1, pageSize = 2) {
+        async searchNo(pageNo = 1, pageSize = 5) {
             //修改当前页码
             this.searchNoModel.pageNo = pageNo;
             //修改每页显示数量
@@ -641,7 +641,7 @@ export default {
 
             }
         },
-        async searchHo(pageNo = 1, pageSize = 2) {
+        async searchHo(pageNo = 1, pageSize = 5) {
             //修改当前页码
             this.searchHoModel.pageNo = pageNo;
             //修改每页显示数量

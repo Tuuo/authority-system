@@ -205,7 +205,7 @@ export default {
             return new Date(date).toLocaleDateString(undefined, options);
         },
 
-        async search(pageNo = 1, pageSize = 2) {
+        async search(pageNo = 1, pageSize = 5) {
             //修改当前页码
             this.searchModel.pageNo = pageNo;
             //修改每页显示数量
@@ -221,7 +221,7 @@ export default {
 
             }
         },
-        async searchNO(pageNo = 1, pageSize = 2) {
+        async searchNO(pageNo = 1, pageSize = 5) {
             //修改当前页码
             this.searchModel.pageNo = pageNo;
             //修改每页显示数量
