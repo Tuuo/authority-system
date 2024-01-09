@@ -43,7 +43,7 @@
                     </el-table>
                     <!-- 分页工具栏 -->
                     <el-pagination @size-change="handleSizeChange" @current-change="handleCurrentChange"
-                        :current-page="pageNo" :page-sizes="[5, 10, 20, 30, 40]" :page-size="5"
+                        :current-page="pageNo" :page-sizes="[10, 20, 30, 40]" :page-size="10"
                         layout="total, sizes, prev, pager, next, jumper" :total="total">
                     </el-pagination>
                     
@@ -104,12 +104,12 @@ export default {
                 person: '',//角色名称
                 title: '',
                 pageNo: 1,
-                pageSize: 5,
+                pageSize: 10,
             },
             roleList: [], //数据列表
             tableHeight: 0, //表格高度
             pageNo: 1, //当前页码
-            pageSize: 5, //每页显示数量
+            pageSize: 10, //每页显示数量
             total: 0, //总数量
             handledSelectedOption: '',
             sendSelectedOption: '',
@@ -175,7 +175,7 @@ export default {
             return new Date(date).toLocaleDateString(undefined, options);
         },
 
-        async search(pageNo = 1, pageSize = 2) {
+        async search(pageNo = 1, pageSize = 10) {
             //修改当前页码
             this.searchModel.pageNo = pageNo;
             //修改每页显示数量

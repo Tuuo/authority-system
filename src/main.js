@@ -42,9 +42,16 @@ import resetForm from '@/utils/resetForm'
 
 //导入快速复制对象工具
 import objCopy from '@/utils/objCopy'
+
+//引入吾羞卿
+import axios from 'axios'
+import * as echarts from 'echarts'
+
 Vue.prototype.$XLSX = XLSX
 Vue.prototype.$objCopy = objCopy;
 Vue.prototype.$resetForm = resetForm;
+Vue.prototype.$axios = axios;
+Vue.prototype.$echarts = echarts;
 
 Vue.prototype.$myconfirm = myconfirm;
 

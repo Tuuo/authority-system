@@ -47,7 +47,7 @@
                             </el-table>
                             <!-- 分页工具栏 -->
                             <el-pagination @size-change="handleSizeChange" @current-change="handleCurrentChange"
-                                :current-page="pageNo" :page-sizes="[5, 10, 20, 30, 40]" :page-size="5"
+                                :current-page="pageNo" :page-sizes="[10, 20, 30, 40]" :page-size="10"
                                 layout="total, sizes, prev, pager, next, jumper" :total="total">
                             </el-pagination>
                         </el-tab-pane>
@@ -93,7 +93,7 @@
                                 </el-table>
                                 <!-- 分页工具栏 -->
                                 <el-pagination @size-change="notiSizeChange" @current-change="notiCurrentChange"
-                                    :current-page="pageNo2" :page-sizes="[5, 10, 20, 30, 40]" :page-size="5"
+                                    :current-page="pageNo2" :page-sizes="[10, 20, 30, 40]" :page-size="10"
                                     layout="total, sizes, prev, pager, next, jumper" :total="total2">
                                 </el-pagination>
                             </div>
@@ -138,7 +138,7 @@
                                 </el-table>
                                 <!-- 分页工具栏 -->
                                 <el-pagination @size-change="notiSizeChange2" @current-change="notiCurrentChange2"
-                                    :current-page="pageNo3" :page-sizes="[5, 10, 20, 30, 40]" :page-size="5"
+                                    :current-page="pageNo3" :page-sizes="[10, 20, 30, 40]" :page-size="10"
                                     layout="total, sizes, prev, pager, next, jumper" :total="total3">
                                 </el-pagination>
                             </div>
@@ -186,7 +186,7 @@
                                     </el-table-column>
                                 </el-table>
                                 <el-pagination @size-change="notiSizeChange3" @current-change="notiCurrentChange3"
-                                    :current-page="pageNo4" :page-sizes="[5, 10, 20, 30, 40]" :page-size="5"
+                                    :current-page="pageNo4" :page-sizes="[10, 20, 30, 40]" :page-size="10"
                                     layout="total, sizes, prev, pager, next, jumper" :total="total4">
                                 </el-pagination>
                             </div>
@@ -327,45 +327,45 @@ export default {
             searchModel: {
                 person: '',//角色名称
                 pageNo: 1,
-                pageSize: 5,
+                pageSize: 10,
             },
             searchNoModel: {
                 title: '',//角色名称
                 pageNo: 1,
-                pageSize: 5,
+                pageSize: 10,
             },
             searchHoModel: {
                 name: '',//角色名称
                 pageNo: 1,
-                pageSize: 5,
+                pageSize: 10,
             },
             searchAoModel: {
                 name: '',//角色名称
                 pageNo: 1,
-                pageSize: 5,
+                pageSize: 10,
             },
             roleList: [], //数据列表
             tableHeight: 0, //表格高度
             pageNo: 1, //当前页码
-            pageSize: 5, //每页显示数量
+            pageSize: 10, //每页显示数量
             total: 0, //总数量
 
             roleList2: [], //数据列表
             tableHeight2: 0, //表格高度
             pageNo2: 1, //当前页码
-            pageSize2: 5, //每页显示数量
+            pageSize2: 10, //每页显示数量
             total2: 0, //总数量
 
             roleList3: [], //数据列表
             tableHeight3: 0, //表格高度
             pageNo3: 1, //当前页码
-            pageSize3: 5, //每页显示数量
+            pageSize3: 10, //每页显示数量
             total3: 0, //总数量
 
             roleList4: [], //数据列表
             tableHeight4: 0, //表格高度
             pageNo4: 1, //当前页码
-            pageSize4: 5, //每页显示数量
+            pageSize4: 10, //每页显示数量
             total4: 0, //总数量
             handledSelectedOption: '',
             sendSelectedOption: '',
@@ -461,7 +461,7 @@ export default {
             return new Date(date).toLocaleDateString(undefined, options);
         },
 
-        async search(pageNo = 1, pageSize = 2) {
+        async search(pageNo = 1, pageSize = 10) {
             //修改当前页码
             this.searchModel.pageNo = pageNo;
             //修改每页显示数量
@@ -477,7 +477,7 @@ export default {
 
             }
         },
-        async searchNO(pageNo = 1, pageSize = 2) {
+        async searchNO(pageNo = 1, pageSize = 10) {
             //修改当前页码
             this.searchNoModel.pageNo = pageNo;
             //修改每页显示数量
@@ -493,7 +493,7 @@ export default {
 
             }
         },
-        async searchHO(pageNo = 1, pageSize = 2) {
+        async searchHO(pageNo = 1, pageSize = 10) {
             //修改当前页码
             this.searchHoModel.pageNo = pageNo;
             //修改每页显示数量
@@ -509,7 +509,7 @@ export default {
 
             }
         },
-        async searchAO(pageNo = 1, pageSize = 2) {
+        async searchAO(pageNo = 1, pageSize = 10) {
             //修改当前页码
             this.searchAoModel.pageNo = pageNo;
             //修改每页显示数量

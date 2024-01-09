@@ -42,7 +42,7 @@
         </div>
       </el-form-item>
 
-      <el-button :loading="loading" type="primary" style="width:100%;margin-bottom:30px;"
+      <el-button :loading="loading" type="primary" style="width:60%;margin-bottom:30px;margin-left: 85px;"
         @click.native.prevent="handleLogin">登录</el-button>
 
     </el-form>

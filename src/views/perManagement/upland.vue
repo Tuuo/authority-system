@@ -123,7 +123,7 @@
                             </el-table>
                             <!-- 分页工具栏 -->
                             <el-pagination @size-change="handleSizeChange2" @current-change="handleCurrentChange2"
-                                :current-page="pageNo2" :page-sizes="[5, 10, 20, 30, 40]" :page-size="5"
+                                :current-page="pageNo2" :page-sizes="[10, 20, 30, 40]" :page-size="10"
                                 layout="total, sizes, prev, pager, next, jumper" :total="total2">
                             </el-pagination>
 
@@ -174,7 +174,7 @@
                             </el-table>
                             <!-- 分页工具栏 -->
                             <el-pagination @size-change="handleSizeChange3" @current-change="handleCurrentChange3"
-                                :current-page="pageNo3" :page-sizes="[5, 10, 20, 30, 40]" :page-size="5"
+                                :current-page="pageNo3" :page-sizes="[10, 20, 30, 40]" :page-size="10"
                                 layout="total, sizes, prev, pager, next, jumper" :total="total3">
                             </el-pagination>
 
@@ -389,12 +389,12 @@ export default {
             searchNoModel: {
                 name: '',//角色名称
                 pageNo: 1,
-                pageSize: 5,
+                pageSize: 10,
             },
             searchHoModel: {
                 name: '',//角色名称
                 pageNo: 1,
-                pageSize: 5,
+                pageSize: 10,
             },
             userList: [], //用户列表
             pageNo: 1, //当前页码
@@ -405,14 +405,14 @@ export default {
             roleList2: [], //数据列表
             tableHeight2: 0, //表格高度
             pageNo2: 1, //当前页码
-            pageSize2: 5, //每页显示数量
+            pageSize2: 10, //每页显示数量
             total2: 0, //总数量
 
 
             roleList3: [], //数据列表
             tableHeight3: 0, //表格高度
             pageNo3: 1, //当前页码
-            pageSize3: 5, //每页显示数量
+            pageSize3: 10, //每页显示数量
             total3: 0, //总数量
             userDialog: {
                 title: '',
@@ -625,7 +625,7 @@ export default {
                 this.total = res.data.total;
             }
         },
-        async searchNo(pageNo = 1, pageSize = 2) {
+        async searchNo(pageNo = 1, pageSize = 10) {
             //修改当前页码
             this.searchNoModel.pageNo = pageNo;
             //修改每页显示数量
@@ -641,7 +641,7 @@ export default {
 
             }
         },
-        async searchHo(pageNo = 1, pageSize = 2) {
+        async searchHo(pageNo = 1, pageSize = 10) {
             //修改当前页码
             this.searchHoModel.pageNo = pageNo;
             //修改每页显示数量

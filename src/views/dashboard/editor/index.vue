@@ -116,17 +116,20 @@
       <el-row>
         <el-col :span="8">
           <el-card>
-            <p>出勤汇总</p>
+            <p>人事汇总</p>
+            <div id="myChart1" :style="{width: '450px', height: '450px'}"></div>
+          </el-card>
+        </el-col>
+        <el-col :span="8" class="home">
+          <el-card>
+            <p>维修汇总</p>
+            <div id="myChart2" :style="{width: '450px', height: '450px'}"></div>
           </el-card>
         </el-col>
         <el-col :span="8">
           <el-card>
-            <p>维修</p>
-          </el-card>
-        </el-col>
-        <el-col :span="8">
-          <el-card>
-            <p>用餐金额统计</p>
+            <p>报销汇总</p>
+            <div id="myChart3" :style="{width: '450px', height: '450px'}"></div>
           </el-card>
         </el-col>
       </el-row>
@@ -237,7 +240,7 @@ export default {
       currentMessage: null, // 当前查看的消息
       dialogVisible: false, // 是否显示详细信息对话框
       replyContent: '', // 回复内容
-
+      
     };
   },
   mounted() {
@@ -246,6 +249,10 @@ export default {
     this.fetchData();
     this.myapproval();
     this.myhandled();
+    this.Draw1();
+    this.Draw2();
+    this.Draw3();
+
   },
   methods: {
     /**
@@ -469,7 +476,155 @@ export default {
     handleView() {
       // 处理查看按钮点击逻辑
     },
-  
+
+    Draw1() {
+            // 基于准备好的dom，初始化echarts实例
+            let myChart = this.$echarts.init(document.getElementById('myChart1'))
+
+            // 绘制图表
+            myChart.setOption({
+                // options配置项
+                tooltip: {
+                        trigger: 'item'
+                      },
+                      legend: {
+                        top: '5%',
+                        left: 'center'
+                      },
+                      series: [
+                        {
+                          name: 'Access From',
+                          type: 'pie',
+                          radius: ['25%', '55%'],
+                          avoidLabelOverlap: false,
+                          itemStyle: {
+                            borderRadius: 10,
+                            borderColor: '#fff',
+                            borderWidth: 2
+                          },
+                          label: {
+                            show: false,
+                            position: 'center'
+                          },
+                          emphasis: {
+                            label: {
+                              show: true,
+                              fontSize: 40,
+                              fontWeight: 'bold'
+                            }
+                          },
+                          labelLine: {
+                            show: false
+                          },
+                          data: [
+                            { value: 14, name: '合同工' },
+                            { value: 49, name: '外聘人员' }
+                          ]
+                        }
+                      ]
+            })
+        },
+    Draw2() {
+            // 基于准备好的dom，初始化echarts实例
+            let myChart = this.$echarts.init(document.getElementById('myChart2'))
+
+            // 绘制图表
+            myChart.setOption({
+                // options配置项
+                tooltip: {
+                        trigger: 'item'
+                      },
+                      legend: {
+                        top: '5%',
+                        left: 'center'
+                      },
+                      series: [
+                        {
+                          name: 'Access From',
+                          type: 'pie',
+                          radius: ['25%', '55%'],
+                          avoidLabelOverlap: false,
+                          itemStyle: {
+                            borderRadius: 10,
+                            borderColor: '#fff',
+                            borderWidth: 2
+                          },
+                          label: {
+                            show: false,
+                            position: 'center'
+                          },
+                          emphasis: {
+                            label: {
+                              show: true,
+                              fontSize: 40,
+                              fontWeight: 'bold'
+                            }
+                          },
+                          labelLine: {
+                            show: false
+                          },
+                          data: [
+                            { value: 10, name: '电脑维修' },
+                            { value: 4, name: '电路维修' },
+                            { value: 3, name: '窗户维修' },
+                            { value: 12, name: '网络维修' },
+                            { value: 6, name: '桌椅维修' },
+                            { value: 4, name: '暖气维修' }
+                          ]
+                        }
+                      ]
+            })
+        },
+        Draw3() {
+            // 基于准备好的dom，初始化echarts实例
+            let myChart = this.$echarts.init(document.getElementById('myChart3'))
+
+            // 绘制图表
+            myChart.setOption({
+                // options配置项
+                tooltip: {
+                        trigger: 'item'
+                      },
+                      legend: {
+                        top: '5%',
+                        left: 'center'
+                      },
+                      series: [
+                        {
+                          name: 'Access From',
+                          type: 'pie',
+                          radius: ['25%', '55%'],
+                          avoidLabelOverlap: false,
+                          itemStyle: {
+                            borderRadius: 10,
+                            borderColor: '#fff',
+                            borderWidth: 2
+                          },
+                          label: {
+                            show: false,
+                            position: 'center'
+                          },
+                          emphasis: {
+                            label: {
+                              show: true,
+                              fontSize: 40,
+                              fontWeight: 'bold'
+                            }
+                          },
+                          labelLine: {
+                            show: false
+                          },
+                          data: [
+                            { value: 20, name: '出差报销' },
+                            { value: 9, name: '办公用品' },
+                            { value: 5, name: '新产品研发' },
+                            { value: 4, name: '电脑更换' },
+                            { value: 4, name: '设备更换' }
+                          ]
+                        }
+                      ]
+            })
+        },
   },
 
 
