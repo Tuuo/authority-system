@@ -1,5 +1,5 @@
 import { login, logout, getInfo } from '@/api/user'
-import { getToken, setToken, removeToken } from '@/utils/auth'
+import { getToken, setToken, removeToken ,setTokenTime } from '@/utils/auth'
 import router, { resetRouter } from '@/router'
 
 const state = {
@@ -27,7 +27,7 @@ const mutations = {
     state.roles = roles
   },
   //将用户ID保存到state中
-  SET_USERUID: (state, userId) => {
+  SET_USERID: (state, userId) => {
     state.userId = userId
   }
 }
@@ -41,11 +41,16 @@ const actions = {
       //调用src/api/user.js文件中的login()方法
       login({ username: username.trim(), password: password }).then(response => {
         //从response中解构出返回的data数据
-        const { token } = response
+        const { token,//token数据
+          expireTime //token过期时间
+        } = response
+        console.log(expireTime)
         //将返回的token数据保存到store中，作为全局变量使用
         commit('SET_TOKEN', token)
         //将token信息保存到cookie中
         setToken(token)
+        //设置token过期时间
+        setTokenTime(expireTime);
         resolve()
       }).catch(error => {
         reject(error)
@@ -58,12 +63,12 @@ const actions = {
     return new Promise((resolve, reject) => {
       getInfo(state.token).then(response => {
         const { data } = response
-
+        // console.log(data)
         if (!data) {
           reject('Verification failed, please Login again.')
         }
         //从后端返回的data数据中解构出用户相关的信息
-        const { roles, name, avatar, introduction ,userId} = data
+        const { roles, name, avatar, introduction ,id} = data
 
         // roles must be a non-empty array
         if (!roles || roles.length <= 0) {
@@ -75,7 +80,9 @@ const actions = {
         commit('SET_NAME', name)
         commit('SET_AVATAR', avatar)
         commit('SET_INTRODUCTION', introduction)
-        commit('SET_USERUID', userId)
+        commit('SET_USERID', id)
+        //将权限字段保存到sessionStorage中
+        sessionStorage.setItem("codeList",JSON.stringify(roles));
         resolve(data)
       }).catch(error => {
         reject(error)

@@ -1,17 +1,64 @@
 import axios from 'axios'
-import { MessageBox, Message } from 'element-ui'
+import {MessageBox, Message} from 'element-ui'
 import store from '@/store'
-import { getToken } from '@/utils/auth'
+import {getToken, setToken, clearStorage, getTokenTime, setTokenTime, removeTokenTime} from '@/utils/auth'
 import qs from 'qs'
+import {refreshTokenApi} from '@/api/user'
 // create an axios instance
 const service = axios.create({
   baseURL: process.env.VUE_APP_BASE_API, // url = base url + request url
   // withCredentials: true, // send cookies when cross-domain requests
-  timeout: 5000 // request timeout
+  timeout: 150000 // request timeout
 })
+
+function refreshTokenInfo() {
+//设置请求参数
+  let param = {
+    token: getToken()
+  }
+  return refreshTokenApi(param).then(res => res);
+}
+
+//定义变量，是否刷新token
+let isRefresh = false;
 // request interceptor
 service.interceptors.request.use(
   config => {
+    //获取当前系统时间
+    let currentTime = new Date().getTime();
+    //获取token过期时间
+    let expireTime = getTokenTime();
+    //判断token是否过期
+    if (expireTime > 0) {
+       //计算时间
+      let min = (expireTime - currentTime) / 1000 / 60;
+      //如果token离过期时间相差10分钟，则刷新token
+      if (min < 10) {
+        //判断是否刷新
+        if (!isRefresh) {
+            //标识刷新
+          isRefresh = true;
+            //调用刷新token的方法
+          return refreshTokenInfo().then(res => {
+            //判断是否成功
+            if (res.success) {
+                //设置新的token和过期时间
+              console.log(res)
+              setToken(res.data.token);
+              setTokenTime(res.data.expireTime);
+                //将新的token添加到header头部
+              config.headers.token = getToken();
+            }
+            return config;
+          }).catch(error => {
+          }).finally(() => {
+              //修改是否刷新token的状态
+            isRefresh = false;
+          });
+        }
+      }
+    }
+      // 从store里面获取token，如果token存在，则将token添加到请求的头部headers中
     // console.log(config)
     // do something before request is sent
     if (store.getters.token) {
@@ -24,6 +71,8 @@ service.interceptors.request.use(
   },
   error => {
     // do something with request error
+    clearStorage();
+    removeTokenTime();
     console.log(error) // for debug
     return Promise.reject(error)
   }
@@ -31,14 +80,14 @@ service.interceptors.request.use(
 // response interceptor
 service.interceptors.response.use(
   /**
-  * If you want to get http information such as headers or status
-  * Please return response => response
-  */
+   * If you want to get http information such as headers or status
+   * Please return response => response
+   */
   /**
-  * Determine the request status by custom code
-  * Here is just an example
-  * You can also judge the status by HTTP Status Code
-  */
+   * Determine the request status by custom code
+   * Here is just an example
+   * You can also judge the status by HTTP Status Code
+   */
   response => {
     const res = response.data
     // if the custom code is not 20000, it is judged as an error.
@@ -49,19 +98,19 @@ service.interceptors.response.use(
         duration: 5 * 1000
       })
       // 50008: Illegal token; 50012: Other clients logged in; 50014: Token expired;
-      if (res.code === 50008 || res.code === 50012 || res.code === 50014) {
+      if (res.code === 50008 || res.code === 50012 || res.code === 50014|| res.code === 600) {
         // to re-login
-        MessageBox.confirm('You have been logged out, you can cancel to stay on this page, or log in again',
-          'Confirm logout',
-          {
-            confirmButtonText: 'Re-Login',
-            cancelButtonText: 'Cancel',
-            type: 'warning'
+        MessageBox.confirm('用户登录信息过期，请重新登录！', '系统提示', {
+          confirmButtonText: '登录',
+          cancelButtonText: '取消',
+          type: 'warning'
           }).then(() => {
-            store.dispatch('user/resetToken').then(() => {
-              location.reload()
-            })
+          store.dispatch('user/resetToken').then(() => {
+            clearStorage();
+            removeTokenTime()
+            location.reload()
           })
+        })
       }
       return Promise.reject(new Error(res.message || 'Error'))
     } else {
@@ -69,6 +118,8 @@ service.interceptors.response.use(
     }
   },
   error => {
+    clearStorage()
+    removeTokenTime()
     console.log('err' + error) // for debug
     Message({
       message: error.message,
@@ -124,7 +175,7 @@ const http = {
       }
       _params = _params.substr(0, _params.length - 1)
     }
-    console.log(_params)
+    // console.log(_params)
     if (_params) {
       return service.get(`${url}${_params}`)
     } else {

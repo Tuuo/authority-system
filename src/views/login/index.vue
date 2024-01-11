@@ -6,7 +6,7 @@
       <div class="title-container">
         <h3 class="title">交通信息管理平台</h3>
       </div>
-      
+
 
       <el-form-item prop="username">
         <span class="svg-container">
@@ -88,6 +88,7 @@ export default {
       showDialog: false,
       redirect: undefined,
       otherQuery: {},
+      // identifyCodes: '1234567890abcdefghijklmnopqrstuvwxyz',
       identifyCodes: '1234567890abcdefghijklmnopqrstuvwxyz',
       identifyCode: '',
     }
@@ -106,6 +107,7 @@ export default {
   },
   created() {
     this.refreshVerifyCode();
+    this.refreshCode();
   },
   mounted() {
     // this.identifyCode='';
@@ -138,6 +140,7 @@ export default {
       this.makeCode(this.identifyCodes, 4)
     },
     makeCode(o, l) {
+      // ctx.font = "20px Arial"; // 设置字体为20像素的Arial
       for (let i = 0; i < l; i++) {
         this.identifyCode += this.identifyCodes[
           this.randomNum(0, this.identifyCodes.length)]
@@ -191,7 +194,7 @@ export default {
       }
     });
     },
-   
+
 
 
     getOtherQuery(query) {

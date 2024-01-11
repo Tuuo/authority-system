@@ -42,6 +42,8 @@ import resetForm from '@/utils/resetForm'
 
 //导入快速复制对象工具
 import objCopy from '@/utils/objCopy'
+//导入按钮权限判断
+import hasPermission from '@/permission/index'
 
 //引入吾羞卿
 import axios from 'axios'
@@ -52,7 +54,7 @@ Vue.prototype.$objCopy = objCopy;
 Vue.prototype.$resetForm = resetForm;
 Vue.prototype.$axios = axios;
 Vue.prototype.$echarts = echarts;
-
+Vue.prototype.hasPermission = hasPermission;
 Vue.prototype.$myconfirm = myconfirm;
 
 Vue.use(Element, {

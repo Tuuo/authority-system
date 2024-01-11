@@ -90,5 +90,12 @@ export default {
 
 
 }
+/**
+ * 刷新token
+ * @returns
+ */
+export async function refreshTokenApi(params){
+  return await http.post("/api/sysUser/refreshToken",params);
+}
 
 

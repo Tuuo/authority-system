@@ -15,57 +15,59 @@
       :height="taskDialog.height" @onClose="onClose" @onConfirm="onConfirm">
       <div slot="content">
         <el-form :model="taskForm" ref="taskForm" label-width="80px" :inline="false" size="small">
+          <el-form-item label="任务类型" prop="name">
           <el-select v-model="value" placeholder="请选择" class="tasks" @change="onSelectOption">
             <el-option v-for="item in options" :key="item.value" :label="item.label" :value="item.value">
             </el-option>
           </el-select>
+          </el-form-item>
         </el-form>
       </div>
     </system-dialog>
 
-    <h2 class="h">任务通告</h2>
-    <el-card>
-      <el-row>
-        <el-table :data="messages" style="width: 100%">
-          <el-table-column label="时间" prop="timestamp" sortable="custom">
-            <template slot-scope="scope">
-              {{ formatDate(scope.row.timestamp) }}
-            </template>
-          </el-table-column>
-          <el-table-column label="标题" prop="title">
-          </el-table-column>
-          <el-table-column label="操作">
-            <template slot-scope="scope">
-              <el-button @click="viewMessage(scope.row)">查看</el-button>
-            </template>
-          </el-table-column>
-        </el-table>
+<!--    <h2 class="h">任务通告</h2>-->
+<!--    <el-card>-->
+<!--      <el-row>-->
+<!--        <el-table :data="messages" style="width: 100%">-->
+<!--          <el-table-column label="时间" prop="timestamp" sortable="custom">-->
+<!--            <template slot-scope="scope">-->
+<!--              {{ formatDate(scope.row.timestamp) }}-->
+<!--            </template>-->
+<!--          </el-table-column>-->
+<!--          <el-table-column label="标题" prop="title">-->
+<!--          </el-table-column>-->
+<!--          <el-table-column label="操作">-->
+<!--            <template slot-scope="scope">-->
+<!--              <el-button @click="viewMessage(scope.row)">查看</el-button>-->
+<!--            </template>-->
+<!--          </el-table-column>-->
+<!--        </el-table>-->
 
-        <!-- 信息详细界面 -->
-        <el-dialog v-if="currentMessage" :visible.sync="dialogVisible">
-          <h2>{{ currentMessage.title }}</h2>
-          <p>{{ currentMessage.content }}</p>
-
-
-          <!-- 回复区域 -->
-          <div v-if="!currentMessage.replied">
-            <el-input v-model="replyContent" placeholder="回复内容"></el-input>
-            <el-button @click="replyToMessage">回复已读</el-button>
-            <el-button @click="markAsRead">自动已读</el-button>
-          </div>
+<!--        &lt;!&ndash; 信息详细界面 &ndash;&gt;-->
+<!--        <el-dialog v-if="currentMessage" :visible.sync="dialogVisible">-->
+<!--          <h2>{{ currentMessage.title }}</h2>-->
+<!--          <p>{{ currentMessage.content }}</p>-->
 
 
-          <!-- 附件 -->
-          <!-- <el-link v-for="attachment in currentMessage.attachments" :key="attachment.id" :href="attachment.url"
-            target="_blank">
-            {{ attachment.name }}
-          </el-link> -->
-        </el-dialog>
+<!--          &lt;!&ndash; 回复区域 &ndash;&gt;-->
+<!--          <div v-if="!currentMessage.replied">-->
+<!--            <el-input v-model="replyContent" placeholder="回复内容"></el-input>-->
+<!--            <el-button @click="replyToMessage">回复已读</el-button>-->
+<!--            <el-button @click="markAsRead">自动已读</el-button>-->
+<!--          </div>-->
 
-        <!-- 更多按钮 -->
-        <!-- <el-button @click="goToMessageList">更多</el-button> -->
-      </el-row>
-    </el-card>
+
+<!--          &lt;!&ndash; 附件 &ndash;&gt;-->
+<!--          &lt;!&ndash; <el-link v-for="attachment in currentMessage.attachments" :key="attachment.id" :href="attachment.url"-->
+<!--            target="_blank">-->
+<!--            {{ attachment.name }}-->
+<!--          </el-link> &ndash;&gt;-->
+<!--        </el-dialog>-->
+
+<!--        &lt;!&ndash; 更多按钮 &ndash;&gt;-->
+<!--        &lt;!&ndash; <el-button @click="goToMessageList">更多</el-button> &ndash;&gt;-->
+<!--      </el-row>-->
+<!--    </el-card>-->
 
     <h2 class="h">我的审批</h2>
     <el-card>
@@ -163,7 +165,7 @@ export default {
       taskDialog: {
         title: '',
         visible: false,
-        height: 100,
+        height: 50,
         width: 300
       },
       approvals: [],
@@ -178,7 +180,7 @@ export default {
       approvalDialog: {
         title: '',
         visible: false,
-        height: 250,
+        height: 120,
         width: 400
       },
       approvalsForm: {
@@ -217,7 +219,7 @@ export default {
       ],
       approvalValue: '',
       approvalList: [],
-      handleds:[],
+      // handleds:[],
       handledList: [],
       options: [{
         value: '1',
@@ -240,7 +242,7 @@ export default {
       currentMessage: null, // 当前查看的消息
       dialogVisible: false, // 是否显示详细信息对话框
       replyContent: '', // 回复内容
-      
+
     };
   },
   mounted() {

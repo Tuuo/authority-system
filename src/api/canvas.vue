@@ -13,11 +13,11 @@
       },
       fontSizeMin: {
         type: Number,
-        default: 16
+        default: 30
       },
       fontSizeMax: {
         type: Number,
-        default: 40
+        default: 50
       },
       backgroundColorMin: {
         type: Number,
@@ -31,6 +31,7 @@
         type: Number,
         default: 50
       },
+
       colorMax: {
         type: Number,
         default: 160
@@ -53,11 +54,11 @@
       },
       contentWidth: {
         type: Number,
-        default: 112
+        default: 120
       },
       contentHeight: {
         type: Number,
-        default: 38
+        default: 50
       }
     },
     methods: {
@@ -87,11 +88,14 @@
         this.drawDot(ctx)
       },
       drawText (ctx, txt, i) {
+
         ctx.fillStyle = this.randomColor(this.colorMin, this.colorMax)
-        ctx.font = this.randomNum(this.fontSizeMin, this.fontSizeMax) + 'px SimHei'
+        // ctx.font = this.randomNum(this.fontSizeMin, this.fontSizeMax) + 'px SimHei'
+        ctx.font = this.randomNum(this.fontSizeMin, this.fontSizeMax) + 'px Arial'; // 或 'Verdana'
         let x = (i + 1) * (this.contentWidth / (this.identifyCode.length + 1))
         let y = this.randomNum(this.fontSizeMax, this.contentHeight - 5)
         var deg = this.randomNum(-45, 45)
+        ctx.imageSmoothingEnabled = false;
         // 修改坐标原点和旋转角度
         ctx.translate(x, y)
         ctx.rotate(deg * Math.PI / 180)
@@ -130,4 +134,3 @@
     }
   }
   </script>
-  

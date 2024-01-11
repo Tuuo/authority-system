@@ -81,7 +81,7 @@
     </system-dialog>
   </div>
 </template>
-  
+
 <script>
 import approvalApi from "@/api/approval"
 import SystemDialog from '@/components/system/SystemDialog.vue';
@@ -108,7 +108,7 @@ export default {
       approvalDialog: {
         title: '',
         visible: false,
-        height: 250,
+        height: 120,
         width: 400
       },
       searchKeyword: '',
@@ -344,7 +344,7 @@ export default {
   },
 };
 </script>
-  
+
 <style>
 .approval-page {
   padding: 20px;
