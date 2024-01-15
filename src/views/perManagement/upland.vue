@@ -927,6 +927,7 @@ export default {
       this.searchModel = {};
       //重新查询
       this.search(this.departmentId);
+      //
     },
     /**
      * 打开添加窗口

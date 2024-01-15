@@ -21,6 +21,8 @@
                   </el-form>
                 </div>
                 <el-button class="search" type="primary" icon="el-icon-search" @click="handleSearch()">查询</el-button>
+                <el-button icon="el-icon-refresh-right" @click="resetValue()">重置</el-button>
+
               </div>
 
               <div>
@@ -247,7 +249,16 @@ export default {
     handleTabClick(tab) {
       // 处理标签切换逻辑
     },
-
+    /**
+     * 重置查询条件
+     */
+    resetValue() {
+      //清空查询条件
+      this.approvalsForm = {};
+      //重新查询
+      this.myapproval();
+      //
+    },
     handleEdit(row) {
       this.approval = row
       // console.log(this.approval);
