@@ -219,7 +219,7 @@ export default {
       this.approvalDialog.title = '新增办公用品申请'; // 设置窗口标题
       this.approvalDialog.visible = true; // 显示窗口
     },
-
+//
 
     onApprovalClose() {
       this.approvalDialog.visible = false
